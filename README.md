@@ -1,27 +1,29 @@
-# y_callbacks
-y_callbacks is a comprehensive collection of callback handlers developed by yeager.ai designed to integrate seamlessly with LangChain and various other applications. The repository provides a wide range of pre-built callbacks for popular platforms like Discord, Git, and GitHub, empowering developers to quickly and efficiently create language model-powered applications.
+# Yeager.ai Framework
+[ WARNING: super-beta ]
+Welcome to the Yeager.ai Framework, an interactive environment for creating and deploying custom AI agents seamlessly. This framework leverages the power of LangChain to build and manage agents that can adapt and respond to user inputs in real-time. Yeager.ai simplifies the agent creation process, making it easier and faster than ever before.
 
-## Features
-- **Extensive Collection:** Access a wide range of pre-built callback handlers tailored for various platforms and applications.
-- **Easy Integration:** Effortlessly connect your LangChain applications with popular services like Discord, Git, and GitHub.
-- **Customizable:** Adapt and modify the existing callback handlers to suit your unique application requirements.
-- **Streamlined Development:** Speed up your development process by incorporating pre-built callback handlers into your projects.
-- **Well-Documented:** Comprehensive documentation and examples ensure a smooth learning curve and rapid implementation.
+## Key Features
+- 🚀 Create customized agents on-the-fly using an interactive interface
+- 🛠️ Pre-built toolkits to help you accomplish specific tasks
+- 🔗 Callbacks that integrate with popular external platforms (Discord, Git, GitHub)
+- 💻 CLI for easy access and control
 
-## Get started
 
-```
-pip install yeagerai-callbacks
-```
+## Getting Started
+To get started with the Yeager.ai Framework, follow these steps:
 
-## Available Callbacks
-y_callbacks provides a variety of pre-built callback handlers, including:
+1. Install the Yeager.ai package using pip:
+    ```
+    pip install yeager.ai
+    ```
+2. Navigate to the scripts directory and run the Command Line Interface:
+    ```
+    python cli.py
+    ```
+3. Follow the prompts to interact with the Yeager.ai framework and create your custom AI agents.
 
-- **Discord:** Engage with your community by integrating LangChain applications into your Discord servers.
-- **Git:** Streamline your development workflow by connecting LangChain applications with Git repositories.
-- **GitHub:** Enhance collaboration and project management by integrating LangChain applications with GitHub.
-
-For a complete list of available callback handlers and their descriptions, please see the Available Callbacks file.
+## Documentation
+For detailed information on components, use cases, tools, agents, toolkits, and agent executors, please visit the [Yeager.ai framework documentation]().
 
 ## Contributing
 We encourage contributions to help expand and improve y_callbacks! Please read our [CONTRIBUTING]() for guidelines on how to submit your contributions.
