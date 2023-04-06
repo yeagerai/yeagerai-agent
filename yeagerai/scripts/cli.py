@@ -1,14 +1,27 @@
+import os
 import click
 
-def yAgentBuilder(prompt_text):
-    # Add your agent.run() logic here
-    out = f"yAgentBuilder: {prompt_text}"
-    return out
+from dotenv import load_dotenv
 
-def yTools(prompt_text):
-    # Add your agent.run() logic here
-    out = f"yTools: {prompt_text}"
-    return out
+from langchain.agents import AgentExecutor, initialize_agent, AgentType
+from langchain.llms import OpenAI
+
+from yeagerai.y_kits_hub.tool_creation_kit.tool_creation_kit import tckit
+
+# from yeagerai.agents.yeager_base_agent import YeagerBaseAgent
+# agent = YeagerBaseAgent()
+# agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tool_creation_toolkit, verbose=True)
+
+load_dotenv()
+
+llm = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
+agent_executor = initialize_agent(tools=tckit, llm=llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+def yAgentBuilder(prompt_text):
+    agent_executor.run(prompt_text)
+
+# Newly created Agent calls
+# for agents in created_agents_folder instantiate agent and create a new agent_executor with the corresponding tools
 
 def chat_interface(selected_function):
     while True:
@@ -17,8 +30,7 @@ def chat_interface(selected_function):
             if prompt_text == ":q":
                 break
 
-            out = selected_function(prompt_text)
-            click.echo(f"Output: {out}")
+            selected_function(prompt_text)
 
         except KeyboardInterrupt:
             continue
@@ -33,9 +45,6 @@ def main(agent):
     if agent == "yagentbuilder":
         click.echo(click.style("Entering yAgentBuilder chat interface...", fg="green"))
         chat_interface(yAgentBuilder)
-    elif agent == "ytools":
-        click.echo(click.style("Entering yTools chat interface...", fg="green"))
-        chat_interface(yTools)
     else:
         click.echo("Please provide a valid agent using the --agent option. For help, use --help.")
 
