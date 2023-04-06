@@ -64,7 +64,7 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
 
 
 class YeagerBaseAgent:
-    def __init__(self, name, openai_model_name, description, yeager_kit):
+    def __init__(self, name, description, openai_model_name, yeager_kit):
         self.name = name
         self.description = description
         self.kit = yeager_kit

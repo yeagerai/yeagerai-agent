@@ -1,30 +1,14 @@
-import os
 import click
 
 from dotenv import load_dotenv
 
-from langchain.agents import AgentExecutor, initialize_agent, AgentType
-from langchain.llms import OpenAI
-
-from yeagerai.y_kits_lib.tool_creation_kit.tool_creation_kit import tckit
-
-# from yeagerai.agents.yeager_base_agent import YeagerBaseAgent
-# agent = YeagerBaseAgent()
-# agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tool_creation_toolkit, verbose=True)
+from yeagerai.agents.y_agent_builder import y_agent_builder
 
 load_dotenv()
 
-llm = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
-agent_executor = initialize_agent(
-    tools=tckit.tools,
-    llm=llm,
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True,
-)
-
 
 def yAgentBuilder(prompt_text):
-    agent_executor.run(prompt_text)
+    y_agent_builder.run(prompt_text)
 
 
 # Newly created Agent calls
@@ -49,7 +33,7 @@ def chat_interface(selected_function):
 @click.command()
 @click.option(
     "--agent",
-    type=click.Choice(["yagentbuilder"]),
+    type=click.Choice(["yAgentBuilder"]),
     help="Select the agent you want to use.",
 )
 def main(agent):
@@ -57,7 +41,7 @@ def main(agent):
         click.style("Welcome to the Yeager.ai Framework!\n", fg="green", bold=True)
     )
 
-    if agent == "yagentbuilder":
+    if agent == "yAgentBuilder":
         click.echo(click.style("Entering yAgentBuilder chat interface...", fg="green"))
         chat_interface(yAgentBuilder)
     else:
