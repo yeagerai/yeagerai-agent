@@ -15,7 +15,7 @@ from yeagerai.y_kits_lib.tool_creation_kit.tool_creation_kit import tckit
 load_dotenv()
 
 llm = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
-agent_executor = initialize_agent(tools=tckit, llm=llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent_executor = initialize_agent(tools=tckit.tools, llm=llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 def yAgentBuilder(prompt_text):
     agent_executor.run(prompt_text)

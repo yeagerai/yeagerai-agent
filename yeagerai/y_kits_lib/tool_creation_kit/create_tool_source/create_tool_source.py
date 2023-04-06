@@ -3,6 +3,10 @@ import re
 
 from dotenv import load_dotenv
 
+from pydantic import BaseModel
+
+from langchain.tools.base import BaseTool
+
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate, LLMChain
 from langchain.prompts.chat import (
@@ -10,19 +14,16 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 
-from pydantic import BaseModel
-class CreateToolSource(BaseModel):
-    openai_api_key: str
-    output_path: str
+class CreateToolSourceAPIWrapper(BaseModel):
 
     def run(self, command:str) -> str:
         load_dotenv()
 
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
+            openai_api_key=os.getenv("OPENAI_API_KEY"), model_name="gpt-3.5-turbo"
         )
 
-        with open("create_tool_master_prompt.md", "r") as f:
+        with open("yeagerai/y_kits_lib/tool_creation_kit/create_tool_source/create_tool_master_prompt.md", "r") as f:
             template_prompt = f.read()
             f.close()
 
@@ -49,3 +50,22 @@ class CreateToolSource(BaseModel):
         return out # the file name has been written
     
 
+
+class CreateToolSourceRun(BaseTool):
+    """Tool that adds the capability to query the Google search API."""
+
+    name = "Create Tool Source"
+    description = (
+        "A wrapper around Google Search. "
+        "Useful for when you need to answer questions about current events. "
+        "Input should be a search query."
+    )
+    api_wrapper: CreateToolSourceAPIWrapper
+
+    def _run(self, query: str) -> str:
+        """Use the tool."""
+        return self.api_wrapper.run(query)
+
+    async def _arun(self, query: str) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("GoogleSearchRun does not support async")
