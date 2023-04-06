@@ -1,5 +1,6 @@
 from langchain.agents import Tool
 
+
 class YeagerProtocol(Tool):
     def __init__(self, name, func, description, return_direct=False):
         super().__init__(name, func, description, return_direct)
@@ -9,4 +10,4 @@ class YeagerProtocol(Tool):
         self.return_direct = return_direct
 
     def run(self, *args, **kwargs):
-        return self.func(*args, **kwargs)    
+        return self.func(*args, **kwargs)

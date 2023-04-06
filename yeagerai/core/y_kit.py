@@ -2,6 +2,7 @@ from langchain.agents import Tool
 
 from yeagerai.core.y_protocol import YeagerProtocol
 
+
 class YeagerKit:
     def __init__(self):
         self.tools = []
