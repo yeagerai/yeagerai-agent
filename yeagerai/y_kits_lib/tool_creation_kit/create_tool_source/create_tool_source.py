@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from pydantic import BaseModel
 
-from langchain.tools.base import BaseTool
+from yeagerai.core.y_tool import YeagerTool
 
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate, LLMChain
@@ -17,7 +17,14 @@ from langchain.prompts.chat import (
 
 
 class CreateToolSourceAPIWrapper(BaseModel):
-    def run(self, command: str, session_path: str) -> str:
+    def run(self, command: str) -> str:
+
+        if command.startswith("["):
+            command = command[1:-1].split(",")
+            command = [x.strip(" ").strip('"') for x in command]
+            session_path = command[1]
+            command = command[0]
+
         # Load environment variables
         load_dotenv()
 
@@ -50,38 +57,49 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(
-            r"(?:```(?:python)?\s*)?(class .*?)(?:```)?", re.DOTALL
+            r"(```.*?```)", re.DOTALL
         )
         code_block = re.search(code_block_pattern, out)
         if code_block:
             code = code_block.group(1).strip()
 
+            if code.startswith("```python"):
+                code = code[9:]
+            elif code.startswith("```"):
+                code = code[3:]
+
+            if code.endswith("```"):
+                code = code[:-3]
+
             # Extract the name of the class from the code block
-            class_name_pattern = re.compile(r"class (\w+):")
+            class_name_pattern = re.compile(r"class (\w+)\(BaseModel\):")
             class_name_match = re.search(class_name_pattern, code)
             if class_name_match:
                 class_name = class_name_match.group(1)
 
                 # Write the {class_name}.py file inside the user-defined session_path
+                os.makedirs(session_path, exist_ok=True)
                 output_file = f"{class_name}.py"
                 with open(os.path.join(session_path, output_file), "w") as f:
                     f.write(code)
                     f.close()
 
-                return f"The file {class_name}.py has been written in the {session_path} successfully!"
+                return f"The file {class_name}.py has been written in the {session_path} successfully!\nHere is the source code of the {class_name} LangChain tool based on given requirements:\n{code}"
 
         return "Error: No code block found or class name could not be extracted."
 
 
-class CreateToolSourceRun(BaseTool):
+class CreateToolSourceRun(YeagerTool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Source"
     description = (
-        "A wrapper around CreateToolSourceAPIWrapper. "
-        "Useful for when you need to create a LangChain Tool. "
-        "Input should be a prompt explaining the functionality wanted in the Tool."
+        """Useful for when you need to create a LangChain Tool. 
+        Input should be two strings, the first string represents the prompt explaining the functionality wanted in the Tool,
+        and the second string is the session_path defined earlier in the conversation.
+        For example, [\"A tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd.\",\"./my_tools\"]"""
     )
+    final_answer_format = "Final answer: just return the output code block and a success message"
     api_wrapper: CreateToolSourceAPIWrapper
 
     def _run(self, query: str) -> str:
