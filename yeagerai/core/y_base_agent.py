@@ -9,35 +9,8 @@ from langchain.schema import HumanMessage
 from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 
 from yeagerai.core.y_tool import YeagerTool
-
-# Set up the base template
-template = """
-Answer the following questions as best you can. 
-
-You are in the middle of a conversation. The chat history is the following:
-
-{chat_history}
-
-You have access to the following tools:
-
-{tools}
-
-ALWAYS use the following format:
-
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought -> Action + Action Input -> Observation can repeat N times)
-
-Final Answer: the final answer to the original input question. This Final Answer, have a format based on the tool you used. The possible formats which depend on the tool that you are using are
-{tools_final_answer_formats}
-
-Question: {input}
-{agent_scratchpad}
-"""
-
+from yeagerai.core.y_memory import YeagerMemory
+from yeagerai.core.y_base_agent_master_template import master_template
 
 # Set up a prompt template
 class YeagerBasePromptTemplate(BaseChatPromptTemplate):
@@ -98,14 +71,17 @@ class CustomOutputParser(AgentOutputParser):
         return AgentAction(tool=action, tool_input=action_input, log=llm_output)
 
 class YeagerBaseAgent:
-    def __init__(self, name, description, openai_model_name, yeager_kit):
+    def __init__(self, name, description, openai_model_name, yeager_kit, memory, callbacks):
         self.name = name
         self.description = description
+
         self.kit = yeager_kit
-        self.memory = ConversationBufferMemory(memory_key="chat_history")
-        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory)
+
+        self.memory = memory
+        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory) # wtf
+
         self.prompt = YeagerBasePromptTemplate(
-            template=template,
+            template=master_template,
             tools=self.kit.tools,
             # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
             # This includes the `intermediate_steps` variable because that is needed
@@ -114,8 +90,9 @@ class YeagerBaseAgent:
         )
 
         self.llm_chain = LLMChain(
-            llm=OpenAI(temperature=0, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory
+            llm=OpenAI(temperature=0, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory,
         )
+
         self.output_parser = CustomOutputParser()
 
         tool_names = [tool.name for tool in self.kit.tools]

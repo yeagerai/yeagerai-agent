@@ -2,7 +2,7 @@ import click
 
 from dotenv import load_dotenv
 
-from yeagerai.agents.y_agent_builder import y_agent_builder
+from yeagerai.agents.y_agent_builder.agent import y_agent_builder
 
 load_dotenv()
 
