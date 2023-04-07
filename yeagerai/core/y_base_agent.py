@@ -6,12 +6,19 @@ from langchain.schema import AgentAction, AgentFinish, HumanMessage
 from langchain import OpenAI, LLMChain
 from langchain.prompts import BaseChatPromptTemplate
 from langchain.schema import HumanMessage
+from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 
 from yeagerai.core.y_tool import YeagerTool
 
 # Set up the base template
 template = """
-Answer the following questions as best you can. You have access to the following tools:
+Answer the following questions as best you can. 
+
+You are in the middle of a conversation. The chat history is the following:
+
+{chat_history}
+
+You have access to the following tools:
 
 {tools}
 
@@ -38,6 +45,7 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
     template: str
     # The list of tools available
     tools: List[YeagerTool]
+    chat_history: ReadOnlySharedMemory
 
     def format_messages(self, **kwargs) -> str:
         # Get the intermediate steps (AgentAction, Observation tuples)
@@ -52,6 +60,9 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
         # Create a tools variable from the list of tools provided
         kwargs["tools"] = "\n".join(
             [f"{tool.name}: {tool.description}" for tool in self.tools]
+        )
+        kwargs["chat_history"] = "\n".join(
+            [f"{message}" for message in self.chat_history]
         )
         # Create a list of tool names for the tools provided
         kwargs["tool_names"] = ", ".join([tool.name for tool in self.tools])
@@ -91,17 +102,19 @@ class YeagerBaseAgent:
         self.name = name
         self.description = description
         self.kit = yeager_kit
-
+        self.memory = ConversationBufferMemory(memory_key="chat_history")
+        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory)
         self.prompt = YeagerBasePromptTemplate(
             template=template,
             tools=self.kit.tools,
             # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
             # This includes the `intermediate_steps` variable because that is needed
             input_variables=["input", "intermediate_steps"],
+            chat_history=self.read_only_memory,
         )
 
         self.llm_chain = LLMChain(
-            llm=OpenAI(temperature=0, model_name=openai_model_name), prompt=self.prompt
+            llm=OpenAI(temperature=0, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory
         )
         self.output_parser = CustomOutputParser()
 
@@ -117,4 +130,7 @@ class YeagerBaseAgent:
         )
 
     def run(self, input):
-        return self.agent_executor.run(input)
+        self.memory.append(HumanMessage(content=input))
+        answer = self.agent_executor.run(input)
+        self.memory.append(answer)
+        return answer
