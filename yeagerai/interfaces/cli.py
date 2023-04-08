@@ -13,7 +13,7 @@ from yeagerai.agents.y_agent_builder.kit.create_tool_source.create_tool_source i
 )
 from yeagerai.core.y_memory import YeagerContextMemory
 from yeagerai.core.y_base_agent import YeagerBaseAgent
-from yeagerai.callbacks.curate_n_store_memory import CurateNStoreMemory
+from yeagerai.callbacks.curate_n_store_memory import MemoryCallbackHandler
 from yeagerai.callbacks.git_local_repo import GitLocalRepoCallbackHandler
 
 
@@ -98,7 +98,9 @@ if __name__ == "__main__":
 
     memory = YeagerContextMemory(username, session_id, session_path)
 
-    curate_memory = CurateNStoreMemory(memory=memory, session_id=session_id)
+    curate_memory = MemoryCallbackHandler(
+        username=username, session_path=session_path, context_memory=memory
+    )
 
     # instantiate the YeagerKit
     tckit = YeagerKit()

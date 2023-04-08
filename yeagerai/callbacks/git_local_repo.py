@@ -77,3 +77,39 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
             self.repo.index.commit(
                 commit_message, author=self.committer, committer=self.committer
             )
+
+    def on_agent_action(self):
+        pass
+
+    def on_chain_end(self):
+        pass
+
+    def on_chain_error(self):
+        pass
+
+    def on_chain_start(self):
+        pass
+
+    def on_llm_end(self):
+        pass
+
+    def on_llm_error(self):
+        pass
+
+    def on_llm_new_token(self):
+        pass
+
+    def on_llm_start(self):
+        pass
+
+    def on_text(self):
+        pass
+
+    def on_tool_end(self):
+        pass
+
+    def on_tool_error(self):
+        pass
+
+    def on_tool_start(self):
+        pass

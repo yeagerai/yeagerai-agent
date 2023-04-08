@@ -1,103 +1,63 @@
 import os
-import json
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
-import openai
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain.schema import AgentAction, AgentFinish, LLMResult
-from pinecone import PineconeClient
+from langchain.schema import AgentFinish
+
+from yeagerai.core.y_memory import YeagerContextMemory
 
 
-class PineconeCallbackHandler(BaseCallbackHandler):
-    """Callback Handler that stores information in Pinecone and manages interactions."""
+class MemoryCallbackHandler(BaseCallbackHandler):
+    """Callback Handler is used to handle safe and load memory tasks."""
 
-    def __init__(self, session_id: str) -> None:
+    def __init__(
+        self, username: str, session_path: str, context_memory: YeagerContextMemory
+    ) -> None:
         """Initialize callback handler."""
         super().__init__()
-
-        self.session_id = session_id
-        self.pinecone_client = PineconeClient()
-
-        # Initialize Pinecone namespace
-        self.pinecone_client.create_namespace(namespace=self.session_id)
-
-    def _get_gpt_summary_and_entities(self, text: str) -> Dict[str, str]:
-        # Create a prompt for summary and entities extraction
-        prompt = f"Create a summary of the following text and extract the entities and their values:\n\n{text}\n\nSummary:{{summary}}{{entities}}"
-
-        # Call the GPT API with the prompt
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=prompt,
-            max_tokens=200,
-            n=1,
-            stop=["{{summary}}", "{{entities}}"],
-            temperature=0.5,
-        )
-
-        # Extract the summary and entities from the GPT API response
-        text = response.choices[0].text.strip()
-        summary, entities = text.split("{{summary}}")[1].split("{{entities}}")
-
-        return {"summary": summary.strip(), "entities": entities.strip()}
-
-    def _store_interactions(self, interaction: str) -> None:
-        # Store interaction in a text file
-        interactions_file = os.path.join(self.session_path, "last_10_interactions.txt")
-
-        if not os.path.exists(interactions_file):
-            with open(interactions_file, "w") as f:
-                f.write(interaction)
-        else:
-            with open(interactions_file, "r") as f:
-                interactions = f.readlines()
-
-            # Keep only the last 10 interactions
-            interactions.append(interaction)
-            interactions = interactions[-10:]
-
-            with open(interactions_file, "w") as f:
-                f.writelines(interactions)
-
-    def on_agent_start(self, **kwargs: Any) -> None:
-        # Load the memory and entities from Pinecone
-        memory_and_entities = self.pinecone_client.fetch(
-            key=self.session_id, namespace=self.session_id
-        )
-
-        if memory_and_entities:
-            # Deserialize and load the memory and entities
-            memory_and_entities = json.loads(memory_and_entities)
-            memory = memory_and_entities.get("memory", None)
-            entities = memory_and_entities.get("entities", None)
-
-            # Load the memory into langchain (replace with the actual function to load memory)
-
-            # Load the entities into langchain (replace with the actual function to load entities)
-
-        # Load the last_10_interactions.txt file into langchain memory
-        interactions_file = os.path.join(self.session_path, "last_10_interactions.txt")
-
-        if os.path.exists(interactions_file):
-            with open(interactions_file, "r") as f:
-                last_10_interactions = f.read()
-            # Load the last_10_interactions into langchain memory (replace with the actual function)
+        self.username = username
+        self.session_path = session_path
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+        self.context_memory = context_memory
+        self.context_memory.load_memory()
 
     def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
-        # Get the overall interaction text from the AgentFinish object
-        interaction_text = str(
-            finish
-        )  # Replace with the actual way to get the interaction text
+        """Save memory when agent finishes."""
+        self.context_memory.store_session_history()
+        self.context_memory.load_memory()
 
-        # Call GPT API to create a summary and extract entities
-        summary_and_entities = self._get_gpt_summary_and_entities(interaction_text)
+    def on_agent_action(self):
+        pass
 
-        # Store the information in Pinecone
-        self.pinecone_client.upsert(
-            key=self.session_id,
-            value=json.dumps(summary_and_entities),
-            namespace=self.session_id,
-        )
+    def on_chain_end(self):
+        pass
 
-        # Store the last interaction in a text file
-        self._store_interactions(interaction_text)
+    def on_chain_error(self):
+        pass
+
+    def on_chain_start(self):
+        pass
+
+    def on_llm_end(self):
+        pass
+
+    def on_llm_error(self):
+        pass
+
+    def on_llm_new_token(self):
+        pass
+
+    def on_llm_start(self):
+        pass
+
+    def on_text(self):
+        pass
+
+    def on_tool_end(self):
+        pass
+
+    def on_tool_error(self):
+        pass
+
+    def on_tool_start(self):
+        pass

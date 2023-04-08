@@ -10,10 +10,18 @@ from langchain.memory import (
 )
 
 
+class YeagerExtendedMemory:
+    pass
+
+
 class YeagerContextMemory:
     """Memory for the Yeager agent."""
 
     def __init__(self, username: str, session_id: str, session_path: str):
+        self.username = username
+        self.session_id = session_id
+        self.session_path = session_path
+
         self.session_history = RedisChatMessageHistory(session_id)
 
         self.last_messages_memory = ConversationBufferWindowMemory(k=10)
@@ -21,7 +29,7 @@ class YeagerContextMemory:
         self.entities_memory = ConversationEntityMemory(llm=OpenAI())
 
         self.memory = CombinedMemory(
-            [
+            memories=[
                 self.last_messages_memory,
                 self.rolling_summary_session_memory,
                 self.entities_memory,

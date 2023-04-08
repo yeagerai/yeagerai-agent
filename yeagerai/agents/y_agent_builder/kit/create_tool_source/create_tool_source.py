@@ -15,9 +15,8 @@ from langchain.prompts.chat import (
 
 
 class CreateToolSourceAPIWrapper(BaseModel):
-    def __init__(self, session_path: str):
-        self.session_path = session_path
-        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+    session_path: str
+    openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, query: str) -> str:
         # Initialize ChatOpenAI with API key and model name
