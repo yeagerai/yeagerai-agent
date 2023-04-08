@@ -12,16 +12,18 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
+
+
 class GitLocalRepoCallbackHandler(BaseCallbackHandler):
     """Callback Handler that creates a local git repo and commits changes."""
 
-    def __init__(self, username:str, session_path: str) -> None:
+    def __init__(self, username: str, session_path: str) -> None:
         """Initialize callback handler."""
         super().__init__()
         self.username = username
         self.session_path = session_path
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
-        
+
         # Check if the directory contains a Git repository
         try:
             self.repo = Repo(self.session_path)
@@ -61,7 +63,7 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
 
         # Create an LLMChain instance and run the command
         chain = LLMChain(llm=chat, prompt=chat_prompt)
-        
+
         commit_message = chain.run(diff_output=diff_output)
 
         return commit_message
@@ -72,4 +74,6 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
 
         if self.repo.is_dirty():
             commit_message = self._get_gpt_commit_message(self.repo)
-            self.repo.index.commit(commit_message, author=self.committer, committer=self.committer)
+            self.repo.index.commit(
+                commit_message, author=self.committer, committer=self.committer
+            )

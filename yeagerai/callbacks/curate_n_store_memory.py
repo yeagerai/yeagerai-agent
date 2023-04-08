@@ -7,6 +7,7 @@ from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import AgentAction, AgentFinish, LLMResult
 from pinecone import PineconeClient
 
+
 class PineconeCallbackHandler(BaseCallbackHandler):
     """Callback Handler that stores information in Pinecone and manages interactions."""
 
@@ -60,13 +61,15 @@ class PineconeCallbackHandler(BaseCallbackHandler):
 
     def on_agent_start(self, **kwargs: Any) -> None:
         # Load the memory and entities from Pinecone
-        memory_and_entities = self.pinecone_client.fetch(key=self.session_id, namespace=self.session_id)
+        memory_and_entities = self.pinecone_client.fetch(
+            key=self.session_id, namespace=self.session_id
+        )
 
         if memory_and_entities:
             # Deserialize and load the memory and entities
             memory_and_entities = json.loads(memory_and_entities)
-            memory = memory_and_entities.get('memory', None)
-            entities = memory_and_entities.get('entities', None)
+            memory = memory_and_entities.get("memory", None)
+            entities = memory_and_entities.get("entities", None)
 
             # Load the memory into langchain (replace with the actual function to load memory)
 
@@ -82,7 +85,9 @@ class PineconeCallbackHandler(BaseCallbackHandler):
 
     def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
         # Get the overall interaction text from the AgentFinish object
-        interaction_text = str(finish)  # Replace with the actual way to get the interaction text
+        interaction_text = str(
+            finish
+        )  # Replace with the actual way to get the interaction text
 
         # Call GPT API to create a summary and extract entities
         summary_and_entities = self._get_gpt_summary_and_entities(interaction_text)
@@ -91,7 +96,7 @@ class PineconeCallbackHandler(BaseCallbackHandler):
         self.pinecone_client.upsert(
             key=self.session_id,
             value=json.dumps(summary_and_entities),
-            namespace=self.session_id
+            namespace=self.session_id,
         )
 
         # Store the last interaction in a text file

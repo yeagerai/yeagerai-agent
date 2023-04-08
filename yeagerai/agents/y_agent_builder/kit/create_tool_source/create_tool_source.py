@@ -15,12 +15,11 @@ from langchain.prompts.chat import (
 
 
 class CreateToolSourceAPIWrapper(BaseModel):
-    def __init__(self, session_path:str):
+    def __init__(self, session_path: str):
         self.session_path = session_path
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
 
     def run(self, query: str) -> str:
-
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
             openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
@@ -49,9 +48,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
         out = chain.run(product=query)
 
         # Parse the Python block inside the output, handling different code block formats
-        code_block_pattern = re.compile(
-            r"(```.*?```)", re.DOTALL
-        )
+        code_block_pattern = re.compile(r"(```.*?```)", re.DOTALL)
         code_block = re.search(code_block_pattern, out)
         if code_block:
             code = code_block.group(1).strip()
@@ -85,13 +82,13 @@ class CreateToolSourceRun(YeagerTool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Source"
-    description = (
-        """Useful for when you need to create a LangChain Tool. 
+    description = """Useful for when you need to create a LangChain Tool. 
         Input should be two strings, the first string represents the prompt explaining the functionality wanted in the Tool,
         and the second string is the session_path defined earlier in the conversation.
         For example, [\"A tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd.\",\"./my_tools\"]"""
+    final_answer_format = (
+        "Final answer: just return the output code block and a success message"
     )
-    final_answer_format = "Final answer: just return the output code block and a success message"
     api_wrapper: CreateToolSourceAPIWrapper
 
     def _run(self, query: str) -> str:

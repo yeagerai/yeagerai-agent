@@ -12,6 +12,7 @@ from yeagerai.core.y_tool import YeagerTool
 from yeagerai.core.y_memory import YeagerMemory
 from yeagerai.core.y_base_agent_master_template import master_template
 
+
 # Set up a prompt template
 class YeagerBasePromptTemplate(BaseChatPromptTemplate):
     # The template to use
@@ -42,14 +43,14 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
 
         # Create a list of tool final formats for the tools provided
         kwargs["tools_final_answer_formats"] = "\n    - ".join(
-            [tool.name +": "+ tool.final_answer_format for tool in self.tools]
+            [tool.name + ": " + tool.final_answer_format for tool in self.tools]
         )
 
         formatted = self.template.format(**kwargs)
         return [HumanMessage(content=formatted)]
 
+
 class CustomOutputParser(AgentOutputParser):
-    
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
         # Check if agent should finish
         if "Final Answer:" in llm_output:
@@ -70,8 +71,19 @@ class CustomOutputParser(AgentOutputParser):
         # Return the action and action input
         return AgentAction(tool=action, tool_input=action_input, log=llm_output)
 
+
 class YeagerBaseAgent:
-    def __init__(self, name, description, preffix_template, suffix_template, openai_model_name, yeager_kit, memory, callbacks):
+    def __init__(
+        self,
+        name,
+        description,
+        preffix_template,
+        suffix_template,
+        openai_model_name,
+        yeager_kit,
+        memory,
+        callbacks,
+    ):
         self.name = name
         self.description = description
 
@@ -80,7 +92,7 @@ class YeagerBaseAgent:
         self.kit = yeager_kit
 
         self.memory = memory
-        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory) # wtf
+        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory)  # wtf
 
         self.prompt = YeagerBasePromptTemplate(
             template=master_template,
@@ -92,7 +104,10 @@ class YeagerBaseAgent:
         )
 
         self.llm_chain = LLMChain(
-            llm=OpenAI(temperature=0.2, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory, callbacks=callbacks
+            llm=OpenAI(temperature=0.2, model_name=openai_model_name),
+            prompt=self.prompt,
+            memory=self.read_only_memory,
+            callbacks=callbacks,
         )
 
         self.output_parser = CustomOutputParser()

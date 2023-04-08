@@ -9,6 +9,7 @@ from yeagerai.core.y_memory import YeagerMemory
 from yeagerai.core.y_base_agent import YeagerBaseAgent
 from yeagerai.callbacks.curate_n_store_memory import CurateNStoreMemory
 from yeagerai.callbacks.git_local_repo import GitLocalRepo
+
 load_dotenv()
 
 # instantiate the YeagerMemory and load LTM
