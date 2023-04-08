@@ -1,6 +1,8 @@
 import os
 
-from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
+
+# from langchain.llms import OpenAI
 from langchain.memory import (
     ConversationSummaryMemory,
     ConversationEntityMemory,
@@ -24,15 +26,17 @@ class YeagerContextMemory:
 
         self.session_history = RedisChatMessageHistory(session_id)
 
-        self.last_messages_memory = ConversationBufferWindowMemory(k=10)
-        self.rolling_summary_session_memory = ConversationSummaryMemory(llm=OpenAI())
-        self.entities_memory = ConversationEntityMemory(llm=OpenAI())
+        self.last_messages_memory = ConversationBufferWindowMemory(
+            k=10, memory_key="session_last_messages"
+        )
+        self.rolling_summary_session_memory = ConversationSummaryMemory(
+            llm=ChatOpenAI(), memory_key="session_summary"
+        )
 
         self.memory = CombinedMemory(
             memories=[
                 self.last_messages_memory,
                 self.rolling_summary_session_memory,
-                self.entities_memory,
             ]
         )
 
@@ -57,11 +61,7 @@ class YeagerContextMemory:
     def load_summary(self):
         self.rolling_summary_session_memory.chat_memory = self.session_history.messages
 
-    def load_entities(self):
-        self.entities_memory.chat_memory = self.session_history.messages
-
     def load_memory(self):
         self.load_or_create_session_history()
         self.load_last_messages()
         self.load_summary()
-        self.load_entities()

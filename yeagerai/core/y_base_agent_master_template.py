@@ -2,15 +2,11 @@ master_template = """
 
 You are an AI expert system, and you are in a conversation with a human. This is the summary of the conversation that you are having:
 
-{conversation_summary}
-
-Here are some entities that were defined during the conversation:
-
-{entities}
+{session_summary}
 
 And here you have the last 10 messages in the history chat:
 
-{chat_history}
+{session_last_messages}
 
 You have access to the following user-configurated variables:
 

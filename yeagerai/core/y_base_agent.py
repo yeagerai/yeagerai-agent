@@ -2,12 +2,12 @@ import re
 from typing import List, Union, Callable
 
 from langchain.agents import AgentExecutor, LLMSingleActionAgent, AgentOutputParser
-from langchain.schema import AgentAction, AgentFinish, HumanMessage
-from langchain import OpenAI, LLMChain
+from langchain.schema import AgentAction, AgentFinish, HumanMessage, BaseMessage
+from langchain.chat_models import ChatOpenAI
+from langchain import LLMChain
 from langchain.prompts import BaseChatPromptTemplate
 from langchain.schema import HumanMessage
-from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
-
+from langchain.callbacks import CallbackManager
 from yeagerai.core.y_tool import YeagerTool
 from yeagerai.core.y_kit import YeagerKit
 from yeagerai.core.y_memory import YeagerContextMemory
@@ -20,19 +20,10 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
     template: str
     # The list of tools available
     tools: List[YeagerTool]
-    chat_history: ReadOnlySharedMemory
+    session_summary: str
+    session_last_messages: List[str]
 
-    # conversation_summary
-    # entities
-    # chat_history
-    # user_configurated_variables
-    # tools
-    # tool_names
-    # tools_final_answer_formats
-    # input
-    # agent_scratchpad
-
-    def format_messages(self, **kwargs) -> str:
+    def format_messages(self, **kwargs) -> List[BaseMessage]:
         # Get the intermediate steps (AgentAction, Observation tuples)
         # Format them in a particular way
         intermediate_steps = kwargs.pop("intermediate_steps")
@@ -55,8 +46,11 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
             [tool.name + ": " + tool.final_answer_format for tool in self.tools]
         )
 
-        kwargs["chat_history"] = "\n".join(
-            [f"{message}" for message in self.chat_history]
+        # Now the memory variables
+        kwargs["session_summary"] = self.session_summary
+
+        kwargs["session_last_messages"] = "\n".join(
+            [f"{message}" for message in self.session_last_messages]
         )
 
         formatted = self.template.format(**kwargs)
@@ -104,8 +98,10 @@ class YeagerBaseAgent:
 
         self.kit = yeager_kit
 
-        self.memory = memory
-        self.read_only_memory = ReadOnlySharedMemory(memory=self.memory.memory)
+        self.memory = memory.memory
+
+        messages = self.memory.memories[1].chat_memory
+        summary = self.memory.memories[1].predict_new_summary(messages, "")
 
         self.prompt = YeagerBasePromptTemplate(
             template=master_template,
@@ -113,14 +109,15 @@ class YeagerBaseAgent:
             # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
             # This includes the `intermediate_steps` variable because that is needed
             input_variables=["input", "intermediate_steps"],
-            read_only_memory=self.read_only_memory,
+            session_last_messages=messages,
+            session_summary=summary,
         )
 
         self.llm_chain = LLMChain(
-            llm=OpenAI(temperature=0.2, model_name=openai_model_name),
+            llm=ChatOpenAI(temperature=0.2, model_name=openai_model_name),
             prompt=self.prompt,
-            memory=self.read_only_memory,
-            callbacks=callbacks,
+            memory=self.memory,
+            callback_manager=CallbackManager(callbacks),
         )
 
         self.output_parser = CustomOutputParser()

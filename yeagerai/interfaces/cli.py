@@ -17,18 +17,18 @@ from yeagerai.callbacks.curate_n_store_memory import MemoryCallbackHandler
 from yeagerai.callbacks.git_local_repo import GitLocalRepoCallbackHandler
 
 
-def yAgentBuilder(prompt_text, session_id):
+def yAgentBuilder(prompt_text):
     y_agent_builder.run(prompt_text)
 
 
-def chat_interface(selected_function, session_id):
+def chat_interface(selected_function):
     while True:
         try:
             prompt_text = input("\n\nEnter your prompt (Type :q to quit):\n\n> ")
             if prompt_text == ":q":
                 break
 
-            selected_function(prompt_text, session_id=session_id)
+            selected_function(prompt_text)
 
         except KeyboardInterrupt:
             continue
@@ -42,18 +42,14 @@ def chat_interface(selected_function, session_id):
     type=click.Choice(["yAgentBuilder"]),
     help="Select the agent you want to use.",
 )
-def main(agent, session_id):
+def main(agent):
     click.echo(
         click.style("Welcome to the Yeager.ai Framework!\n", fg="green", bold=True)
     )
 
-    click.echo(
-        click.style(f"The new session_id is {session_id}\n", fg="green", bold=True)
-    )
-
     if agent == "yAgentBuilder":
         click.echo(click.style("Entering yAgentBuilder chat interface...", fg="green"))
-        chat_interface(yAgentBuilder, session_id=session_id)
+        chat_interface(yAgentBuilder)
     else:
         click.echo(
             "Please provide a valid agent using the --agent option. For help, use --help."
@@ -123,4 +119,4 @@ if __name__ == "__main__":
     )
 
     # start conversation
-    main(session_path=session_path)
+    main()
