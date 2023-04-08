@@ -2,8 +2,6 @@
 import os
 import re
 
-from dotenv import load_dotenv
-
 from pydantic import BaseModel
 
 from yeagerai.core.y_tool import YeagerTool
@@ -17,25 +15,20 @@ from langchain.prompts.chat import (
 
 
 class CreateToolSourceAPIWrapper(BaseModel):
-    def run(self, command: str) -> str:
+    def __init__(self, session_path:str):
+        self.session_path = session_path
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
 
-        if command.startswith("["):
-            command = command[1:-1].split(",")
-            command = [x.strip(" ").strip('"') for x in command]
-            session_path = command[1]
-            command = command[0]
-
-        # Load environment variables
-        load_dotenv()
+    def run(self, query: str) -> str:
 
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=os.getenv("OPENAI_API_KEY"), model_name="gpt-3.5-turbo"
+            openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
         )
 
         # Read the master prompt template file
         with open(
-            "yeagerai/y_kits_lib/tool_creation_kit/create_tool_source/create_tool_master_prompt.md",
+            "yeagerai/agents/y_agent_builder/kit/create_tool_source/create_tool_master_prompt.md",
             "r",
         ) as f:
             template_prompt = f.read()
@@ -53,7 +46,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
         # Create an LLMChain instance and run the command
         chain = LLMChain(llm=chat, prompt=chat_prompt)
-        out = chain.run(product=command)
+        out = chain.run(product=query)
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(
@@ -78,13 +71,12 @@ class CreateToolSourceAPIWrapper(BaseModel):
                 class_name = class_name_match.group(1)
 
                 # Write the {class_name}.py file inside the user-defined session_path
-                os.makedirs(session_path, exist_ok=True)
                 output_file = f"{class_name}.py"
-                with open(os.path.join(session_path, output_file), "w") as f:
+                with open(os.path.join(self.session_path, output_file), "w") as f:
                     f.write(code)
                     f.close()
 
-                return f"The file {class_name}.py has been written in the {session_path} successfully!\nHere is the source code of the {class_name} LangChain tool based on given requirements:\n{code}"
+                return f"The file {class_name}.py has been written in the {self.session_path} successfully!\nHere is the source code of the {class_name} LangChain tool based on given requirements:\n{code}"
 
         return "Error: No code block found or class name could not be extracted."
 
