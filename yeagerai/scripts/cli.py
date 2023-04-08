@@ -2,18 +2,13 @@ import click
 
 from dotenv import load_dotenv
 
-from yeagerai.agents.y_agent_builder.agent import y_agent_builder
+from yeagerai.agents.y_agent_builder.y_agent_builder import y_agent_builder
 
 load_dotenv()
 
 
 def yAgentBuilder(prompt_text):
     y_agent_builder.run(prompt_text)
-
-
-# Newly created Agent calls
-# for agents in created_agents_folder instantiate agent and create a new agent_executor with the corresponding tools
-
 
 def chat_interface(selected_function):
     while True:

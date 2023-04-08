@@ -1,45 +1,58 @@
-"""Util that starts a working session."""
 import os
+import uuid
+from typing import Any, Dict, Optional, Union
 
-from git import Repo
-from pydantic import BaseModel
-from yeagerai.core.y_tool import YeagerTool
+from git import Repo, Actor
+from langchain.callbacks.base import BaseCallbackHandler
+from langchain.schema import AgentAction, AgentFinish, LLMResult
 
-class StartSessionToolAPIWrapper(BaseModel):
-    """A tool that starts a working session.
-    This tool does not have any external dependencies and simply starts a working session.
-    """
-    def run(self, query: str) -> str:
-        """Start a working session and return a confirmation message."""
-        # remove the " signs
-        query = query.replace("\"","").strip() 
-        
-        if os.path.isabs(os.path.abspath(query)):
-            path = os.path.abspath(query)
-        else:
-            return "Please provide a real path. The input provided is not a valid path."
+class GitLocalRepoCallbackHandler(BaseCallbackHandler):
+    """Callback Handler that creates a local git repo and commits changes."""
 
-        os.makedirs(path, exist_ok=True)
-        Repo.init(path)
+    def __init__(self, username: str) -> None:
+        """Initialize callback handler."""
+        super().__init__()
 
-        return f"Working session started successfully, the session_path is {path}."
+        # Generate a UUID for the session
+        session_id = str(uuid.uuid4())
 
-class StartSessionTool(YeagerTool):
-    """Tool that starts the working session path and creates a git repository on this path."""
+        # Set the session_path using UUID and username
+        self.session_path = os.path.join(session_id, username)
 
-    name = "Start Session"
-    description = (
-        """This tool usually will be called as the first action of the agent. It basically sets the cwd named session_path for the whole conversation. 
-        Input is a string which will be the session_path.
-        For example, \"./my_tools\""""
-    )
-    final_answer_format = "Final answer: just return the output session_path and a success message"
-    api_wrapper: StartSessionToolAPIWrapper
+        # Create the local git repo
+        os.makedirs(self.session_path, exist_ok=True)
+        self.repo = Repo.init(self.session_path)
+        self.committer = Actor(username, f"{username}@example.com")
 
-    def _run(self, query: str) -> str:
-        """Use the tool."""
-        return self.api_wrapper.run(query)
+    def _get_gpt_commit_message(self, repo: Repo) -> str:
+        """
+        Call the GPT API to get a commit message that explains the differences.
+        """
+        # Get the differences
+        diff_output = repo.git.diff(repo.head.commit.tree)
 
-    async def _arun(self, query: str) -> str:
-        """Use the tool asynchronously."""
-        raise NotImplementedError("GoogleSearchRun does not support async")
+        # Create a prompt template
+        prompt_tempalte = "Explain the following changes in a Git commit message:\n\n{diff_output}\n\nCommit message:"
+
+        # Call the GPT API with the prompt (replace by langchain LLM)
+        response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=prompt,
+            max_tokens=50,
+            n=1,
+            stop=None,
+            temperature=0.5,
+        )
+
+        # Extract the commit message from the GPT API response
+        commit_message = response.choices[0].text.strip()
+
+        return commit_message
+
+    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
+        """Commit changes when an agent finishes its execution."""
+        self.repo.git.add(A=True)
+
+        if self.repo.is_dirty():
+            commit_message = self._get_gpt_commit_message(self.repo)
+            self.repo.index.commit(commit_message, author=self.committer, committer=self.committer)

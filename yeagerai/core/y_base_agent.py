@@ -71,9 +71,11 @@ class CustomOutputParser(AgentOutputParser):
         return AgentAction(tool=action, tool_input=action_input, log=llm_output)
 
 class YeagerBaseAgent:
-    def __init__(self, name, description, openai_model_name, yeager_kit, memory, callbacks):
+    def __init__(self, name, description, preffix_template, suffix_template, openai_model_name, yeager_kit, memory, callbacks):
         self.name = name
         self.description = description
+
+        self.master_template = preffix_template + master_template + suffix_template
 
         self.kit = yeager_kit
 
@@ -90,7 +92,7 @@ class YeagerBaseAgent:
         )
 
         self.llm_chain = LLMChain(
-            llm=OpenAI(temperature=0, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory,
+            llm=OpenAI(temperature=0.2, model_name=openai_model_name), prompt=self.prompt, memory=self.read_only_memory, callbacks=callbacks
         )
 
         self.output_parser = CustomOutputParser()
@@ -107,7 +109,5 @@ class YeagerBaseAgent:
         )
 
     def run(self, input):
-        self.memory.append(HumanMessage(content=input))
         answer = self.agent_executor.run(input)
-        self.memory.append(answer)
         return answer
