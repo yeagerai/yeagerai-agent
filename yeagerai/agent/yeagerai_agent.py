@@ -5,7 +5,7 @@ from langchain.agents import AgentExecutor, LLMSingleActionAgent
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import CallbackManager
 
-from yeagerai.toolkit import YeagerAIToolkit, CreateToolSourceAPIWrapper, CreateToolSourceRun
+from yeagerai.toolkit import YeagerAIToolkit, CreateToolSourceAPIWrapper, CreateToolSourceRun, DesignSolutionSketchAPIWrapper, DesignSolutionSketchRun
 from yeagerai.memory import YeagerAIContext
 from yeagerai.agent.output_parser import YeagerAIOutputParser
 from yeagerai.agent.prompt_template import  YeagerAIPromptTemplate
@@ -27,6 +27,9 @@ class YeagerAIAgent:
         self.yeager_kit.register_tool(
             CreateToolSourceRun(api_wrapper=CreateToolSourceAPIWrapper(session_path=self.session_path)),
         )
+        self.yeager_kit.register_tool(
+            DesignSolutionSketchRun(api_wrapper=DesignSolutionSketchAPIWrapper(session_path=self.session_path)),
+        )
 
         self.prompt = YeagerAIPromptTemplate(
             template=MASTER_TEMPLATE,
@@ -38,7 +41,7 @@ class YeagerAIAgent:
         )
 
         self.llm_chain = LLMChain(
-            llm=ChatOpenAI(temperature=0.2, model_name="gpt-4"),
+            llm=ChatOpenAI(temperature=0.2, model_name="gpt-3.5-turbo"),
             prompt=self.prompt,
             memory=self.context.chat_buffer_memory,
             callback_manager=CallbackManager(self.callbacks),

@@ -1,7 +1,7 @@
 """Creates the source code of a new LangChain Tool on-the-fly and writes it into session cwd."""
 import os
 import re
-
+from typing import List
 from pydantic import BaseModel
 
 from yeagerai.toolkit.yeagerai_tool import YeagerAITool
@@ -12,30 +12,27 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
-
+from .create_tool_master_prompt import CREATE_TOOL_MASTER_PROMPT
 
 class CreateToolSourceAPIWrapper(BaseModel):
     session_path: str
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
-    def run(self, query: str) -> str:
+    def run(self, solution_sketch_n_tool_tests: str) -> str:
+
+        # Split the solution sketch and tool tests
+        solution_sketch = solution_sketch_n_tool_tests.strip("[]").split(", ")[0]###### idk how to split
+        tool_tests = solution_sketch_n_tool_tests.strip("[]").split(", ")[1]
+
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
+            openai_api_key=self.openai_api_key, model_name="gpt-4"
         )
-
-        # Read the master prompt template file
-        with open(
-            "yeagerai/agents/y_agent_builder/kit/create_tool_source/create_tool_master_prompt.md",
-            "r",
-        ) as f:
-            template_prompt = f.read()
-            f.close()
 
         # Create a PromptTemplate instance with the read template
         y_tool_master_prompt = PromptTemplate(
-            input_variables=["product"],
-            template=template_prompt,
+            input_variables=["solution_sketch", "tool_tests"],
+            template=CREATE_TOOL_MASTER_PROMPT,
         )
 
         # Create a HumanMessagePromptTemplate instance with the master prompt
@@ -44,7 +41,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
         # Create an LLMChain instance and run the command
         chain = LLMChain(llm=chat, prompt=chat_prompt)
-        out = chain.run(product=query)
+        out = chain.run(solution_sketch, tool_tests)
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(r"(```.*?```)", re.DOTALL)
@@ -81,18 +78,19 @@ class CreateToolSourceRun(YeagerAITool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Source"
-    description = """Useful for when you need to create a LangChain Tool. 
-        Input should be two strings, the first string represents the prompt explaining the functionality wanted in the Tool,
-        and the second string is the session_path defined earlier in the conversation.
-        For example, [\"A tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd.\",\"./my_tools\"]"""
+    description = """Useful for when you need to create the source code of a LangChain Tool. 
+        Input should be a list of two strings, the first string represents the solution sketch of the functionality wanted in the Tool,
+        and the second string is code block that contains the unit tests of the Tool that you want to create. 
+        Both of them should be defined earlier in the conversation. You have to create first the solution sketch and then the unit tests using other tools.
+        """
     final_answer_format = (
-        "Final answer: just return the output code block and a success message"
+        "Final answer: just return the output code block that contains the code of the Tool and a success message"
     )
     api_wrapper: CreateToolSourceAPIWrapper
 
-    def _run(self, query: str) -> str:
+    def _run(self, solution_sketch_n_tool_tests: str) -> str:
         """Use the tool."""
-        return self.api_wrapper.run(query)
+        return self.api_wrapper.run(solution_sketch_n_tool_tests=solution_sketch_n_tool_tests)
 
     async def _arun(self, query: str) -> str:
         """Use the tool asynchronously."""

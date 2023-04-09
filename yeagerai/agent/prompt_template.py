@@ -33,5 +33,5 @@ class YeagerAIPromptTemplate(BaseChatPromptTemplate):
             kwargs["chat_history"] = "\n".join([message["type"]+": ("+message["data"]["content"]+")" for message in dicts])
 
         formatted = self.template.format(**kwargs)
-        print(formatted)
+        # print(formatted)
         return [HumanMessage(content=formatted)]

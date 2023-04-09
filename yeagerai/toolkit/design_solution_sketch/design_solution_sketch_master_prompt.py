@@ -1,4 +1,4 @@
-You are a world class expert in designing Tools based on simple descriptions. You don't type python code, but give all the required specifications 
+DESIGN_SOLUTION_SKETCH_MASTER_PROMPT = """You are a world class expert in designing Tools based on simple descriptions. You don't type python code, but give all the required specifications 
 so others can later implement the Tools.
 
 Here is how a template of a Tool looks like:
@@ -32,22 +32,22 @@ class MyToolAPIWrapper(BaseModel):
         ...
 
 class MyToolRun(YeagerTool):
-    """Explain what the tool does"""
+    \"\"\"Explain what the tool does\"\"\"
 
     name = "My Tool's Name"
     description = (
-        """Describe when it is useful to use the tool.
-        And an example of its inputs explained"""
+        \"\"\"Describe when it is useful to use the tool.
+        And an example of its inputs explained\"\"\"
     )
     final_answer_format = "Final answer: describe which is the output message of the tool"
     api_wrapper: MyToolAPIWrapper
 
     def _run(self, query: str) -> str:
-        """Use the tool."""
+        \"\"\"Use the tool.\"\"\"
         return self.api_wrapper.run(query)
 
     async def _arun(self, query: str) -> str:
-        """Use the tool asynchronously."""
+        \"\"\"Use the tool asynchronously.\"\"\"
         raise NotImplementedError("GoogleSearchRun does not support async")
 
 ```
@@ -78,3 +78,4 @@ Here is the methodology that you have to follow to create the design of the Tool
 Create a solution sketch of a Tool given this description: 
 
 {tool_description_prompt}
+"""
