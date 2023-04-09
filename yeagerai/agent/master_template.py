@@ -1,4 +1,4 @@
-master_template = """
+MASTER_TEMPLATE = """
 
 You are an AI expert system, and you are in a conversation with a human. This is the summary of the conversation that you are having:
 

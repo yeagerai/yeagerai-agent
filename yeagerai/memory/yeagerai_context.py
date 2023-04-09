@@ -7,16 +7,10 @@ from langchain.memory import (
     ConversationSummaryMemory,
     CombinedMemory,
     RedisChatMessageHistory,
-    ConversationBufferWindowMemory,
 )
 
-
-class YeagerExtendedMemory:
-    pass
-
-
-class YeagerContextMemory:
-    """Memory for the Yeager agent."""
+class YeagerContext:
+    """Context for the @yeager.ai agent."""
 
     def __init__(self, username: str, session_id: str, session_path: str):
         self.username = username

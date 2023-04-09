@@ -6,25 +6,16 @@ import uuid
 
 from dotenv import load_dotenv
 
-from yeagerai.toolkit.yeagerai_toolkit import YeagerAIToolkit
-from yeagerai.memory.y_memory import YeagerContextMemory
-from yeagerai.agent.yeagerai_agent import YeagerBaseAgent
-from yeagerai.memory.callbacks.curate_n_store_memory import MemoryCallbackHandler
-from yeagerai.interfaces.callbacks.git_local_repo import GitLocalRepoCallbackHandler
+from yeagerai.agent import YeagerAIAgent
 
-
-def yAgentBuilder(prompt_text):
-    y_agent_builder.run(prompt_text)
-
-
-def chat_interface(selected_function):
+def chat_interface():
     while True:
         try:
             prompt_text = input("\n\nEnter your prompt (Type :q to quit):\n\n> ")
             if prompt_text == ":q":
                 break
 
-            selected_function(prompt_text)
+            y_agent_builder.run(prompt_text)
 
         except KeyboardInterrupt:
             continue
@@ -33,23 +24,13 @@ def chat_interface(selected_function):
 
 
 @click.command()
-@click.option(
-    "--agent",
-    type=click.Choice(["yAgentBuilder"]),
-    help="Select the agent you want to use.",
-)
-def main(agent):
+def main():
     click.echo(
-        click.style("Welcome to the Yeager.ai Framework!\n", fg="green", bold=True)
+        click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True)
     )
 
-    if agent == "yAgentBuilder":
-        click.echo(click.style("Entering yAgentBuilder chat interface...", fg="green"))
-        chat_interface(yAgentBuilder)
-    else:
-        click.echo(
-            "Please provide a valid agent using the --agent option. For help, use --help."
-        )
+    click.echo(click.style("Loading The @yeager.ai Agent Interface...", fg="green"))
+    chat_interface()
 
 
 def create_or_restore_session():
@@ -77,41 +58,14 @@ def create_or_restore_session():
 
 
 if __name__ == "__main__":
-    # load the .env file
     load_dotenv()
 
-    # start or continue with the session
     username, session_id, session_path = create_or_restore_session()
 
-    # instantiate the local repo callback
-    git_repo_callback = GitLocalRepoCallbackHandler(
-        username=username, session_path=session_path
-    )
-
-    memory = YeagerContextMemory(username, session_id, session_path)
-
-    curate_memory = MemoryCallbackHandler(
-        username=username, session_path=session_path, context_memory=memory
-    )
-
-    # instantiate the YeagerKit
-    tckit = YeagerAIToolkit()
-    tckit.register_tool(
-        CreateToolSourceRun(
-            api_wrapper=CreateToolSourceAPIWrapper(session_path=session_path)
-        )
-    )
-
-    # instantiate the agent
-    y_agent_builder = YeagerBaseAgent(
-        name="yAgentBuilder",
-        description="A Yeager.ai agent that uses Yeager.ai's agent creation kit to create custom LangChain agents from prompts.",
-        preffix_template="",
-        suffix_template="",
-        openai_model_name="gpt-4",
-        yeager_kit=tckit,
-        memory=memory,
-        callbacks=[curate_memory, git_repo_callback],
+    y_agent_builder = YeagerAIAgent(
+        username=username,
+        session_id=session_id,
+        session_path=session_path,
     )
 
     # start conversation

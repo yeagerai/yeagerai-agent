@@ -1,5 +1,5 @@
 from langchain.tools import BaseTool
 
 
-class YeagerTool(BaseTool):
+class YeagerAITool(BaseTool):
     final_answer_format: str

@@ -5,7 +5,8 @@ from typing import List
 
 from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.tools import BaseTool
-from yeagerai.toolkit.yeagerai_tool import YeagerTool
+
+from yeagerai.toolkit import CreateToolSourceAPIWrapper, CreateToolSourceRun
 
 class YeagerAIToolkit(BaseToolkit):
     """Toolkit for interacting with a JSON spec."""
