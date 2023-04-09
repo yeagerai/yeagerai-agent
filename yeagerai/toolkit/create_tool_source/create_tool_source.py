@@ -4,7 +4,7 @@ import re
 
 from pydantic import BaseModel
 
-from yeagerai.core.y_tool import YeagerTool
+from yeagerai.toolkit.yeagerai_tool import YeagerAITool
 
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate, LLMChain
@@ -77,7 +77,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
         return "Error: No code block found or class name could not be extracted."
 
 
-class CreateToolSourceRun(YeagerTool):
+class CreateToolSourceRun(YeagerAITool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Source"

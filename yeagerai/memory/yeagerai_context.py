@@ -24,6 +24,7 @@ class YeagerAIContext:
                 dicts = f.read()
                 self.session_message_history.messages = messages_from_dict(dicts)
         except FileNotFoundError:
+            os.makedirs(self.session_path, exist_ok=True)
             with open(os.path.join(self.session_path, "session_history.txt"), "w") as f:
                 f.close()
 

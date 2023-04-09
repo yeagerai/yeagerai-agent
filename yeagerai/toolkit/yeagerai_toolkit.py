@@ -6,17 +6,14 @@ from typing import List
 from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.tools import BaseTool
 
-from yeagerai.toolkit import CreateToolSourceAPIWrapper, CreateToolSourceRun
-
 class YeagerAIToolkit(BaseToolkit):
     """Toolkit for interacting with a JSON spec."""
-
+    tools_list: List[BaseTool] = []
 
     def get_tools(self) -> List[BaseTool]:
         """Get the tools in the toolkit."""
-        return [
-        ]
+        return self.tools_list
     
     def register_tool(self, tool: BaseTool):
         """Register a tool to the toolkit."""
-        pass
+        self.tools_list.append(tool)

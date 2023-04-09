@@ -5,10 +5,11 @@ from langchain.agents import AgentExecutor, LLMSingleActionAgent
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import CallbackManager
 
-from yeagerai.toolkit import YeagerAIToolkit
+from yeagerai.toolkit import YeagerAIToolkit, CreateToolSourceAPIWrapper, CreateToolSourceRun
 from yeagerai.memory import YeagerAIContext
-from yeagerai.agent import MASTER_TEMPLATE, YeagerAIOutputParser, YeagerAIPromptTemplate
-
+from yeagerai.agent.output_parser import YeagerAIOutputParser
+from yeagerai.agent.prompt_template import  YeagerAIPromptTemplate
+from yeagerai.agent.master_template import MASTER_TEMPLATE
 class YeagerAIAgent:
     name:str = "yeager.ai"
     description:str = "The ultimate LangChain Agent Builder."
@@ -23,9 +24,9 @@ class YeagerAIAgent:
 
         # build toolkit
         self.yeager_kit = YeagerAIToolkit()
-        self.yeager_kit.register_tools([
-
-        ])
+        self.yeager_kit.register_tool(
+            CreateToolSourceRun(api_wrapper=CreateToolSourceAPIWrapper(session_path=self.session_path)),
+        )
 
         self.prompt = YeagerAIPromptTemplate(
             template=MASTER_TEMPLATE,
@@ -33,6 +34,7 @@ class YeagerAIAgent:
             # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
             # This includes the `intermediate_steps` variable because that is needed
             input_variables=["input", "intermediate_steps"],
+            chat_history=self.context.chat_buffer_memory.chat_memory,
         )
 
         self.llm_chain = LLMChain(
@@ -44,7 +46,7 @@ class YeagerAIAgent:
 
         self.output_parser = YeagerAIOutputParser()
 
-        tool_names = [tool.name for tool in self.kit.tools]
+        tool_names = [tool.name for tool in self.yeager_kit.get_tools()]
         self.agent = LLMSingleActionAgent(
             llm_chain=self.llm_chain,
             output_parser=self.output_parser,
