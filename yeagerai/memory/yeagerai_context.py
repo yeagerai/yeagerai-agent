@@ -16,7 +16,7 @@ class YeagerAIContext:
         self.session_path = session_path
 
         self.session_message_history = ChatMessageHistory()
-        self.chat_buffer_memory = ConversationBufferMemory()
+        self.chat_buffer_memory = ConversationBufferMemory(memory_key="chat_history",  input_key='input')
 
     def load_session_message_history(self):
         try:

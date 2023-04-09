@@ -42,6 +42,7 @@ class YeagerAIAgent:
             prompt=self.prompt,
             memory=self.context.chat_buffer_memory,
             callback_manager=CallbackManager(self.callbacks),
+            verbose=True,
         )
 
         self.output_parser = YeagerAIOutputParser()
