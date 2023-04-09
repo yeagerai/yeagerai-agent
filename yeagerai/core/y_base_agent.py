@@ -21,7 +21,6 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
     # The list of tools available
     tools: List[YeagerTool]
     session_summary: str
-    session_last_messages: List[str]
 
     def format_messages(self, **kwargs) -> List[BaseMessage]:
         # Get the intermediate steps (AgentAction, Observation tuples)
@@ -48,10 +47,6 @@ class YeagerBasePromptTemplate(BaseChatPromptTemplate):
 
         # Now the memory variables
         kwargs["session_summary"] = self.session_summary
-
-        kwargs["session_last_messages"] = "\n".join(
-            [f"{message}" for message in self.session_last_messages]
-        )
 
         formatted = self.template.format(**kwargs)
         return [HumanMessage(content=formatted)]
@@ -100,16 +95,17 @@ class YeagerBaseAgent:
 
         self.memory = memory.memory
 
-        messages = self.memory.memories[1].chat_memory
-        summary = self.memory.memories[1].predict_new_summary(messages, "")
-
+        messages = self.memory.memories[0].chat_memory
+        summary = self.memory.memories[0].predict_new_summary(messages, "")
+        print(messages)
+        print("##################")
+        print(summary)
         self.prompt = YeagerBasePromptTemplate(
             template=master_template,
             tools=self.kit.tools,
             # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
             # This includes the `intermediate_steps` variable because that is needed
             input_variables=["input", "intermediate_steps"],
-            session_last_messages=messages,
             session_summary=summary,
         )
 
@@ -134,5 +130,4 @@ class YeagerBaseAgent:
         )
 
     def run(self, input):
-        answer = self.agent_executor.run(input)
-        return answer
+        return self.agent_executor.run(input)

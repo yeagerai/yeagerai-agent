@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CLI AgentBuilder",
+            "type": "python",
+            "request": "launch",
+            "program": "yeagerai/interfaces/cli.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}"
+            },
+            "args": ["--agent", "yAgentBuilder"]
+        }
+    ]
+}

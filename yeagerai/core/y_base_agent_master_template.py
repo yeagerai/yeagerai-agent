@@ -4,14 +4,6 @@ You are an AI expert system, and you are in a conversation with a human. This is
 
 {session_summary}
 
-And here you have the last 10 messages in the history chat:
-
-{session_last_messages}
-
-You have access to the following user-configurated variables:
-
-{user_configurated_variables}
-
 You have access to the following tools:
 
 {tools}
