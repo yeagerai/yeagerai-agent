@@ -22,8 +22,8 @@ class CreateToolSourceAPIWrapper(BaseModel):
     def run(self, solution_sketch_n_tool_tests: str) -> str:
 
         # Split the solution sketch and tool tests
-        solution_sketch = solution_sketch_n_tool_tests.strip("[]").split(", ")[0]###### idk how to split
-        tool_tests = solution_sketch_n_tool_tests.strip("[]").split(", ")[1]
+        solution_sketch = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[0]
+        tool_tests = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[1]
 
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
@@ -80,9 +80,11 @@ class CreateToolSourceRun(YeagerAITool):
 
     name = "Create Tool Source"
     description = """Useful for when you need to create the source code of a LangChain Tool. 
-        Input should be a list of two strings, the first string represents the solution sketch of the functionality wanted in the Tool,
-        and the second string is code block that contains the unit tests of the Tool that you want to create. 
-        Both of them should be defined earlier in the conversation. You have to create first the solution sketch and then the unit tests using other tools.
+        Input MUST BE a string made of two substrings separated by a this token '######SPLIT_TOKEN########'.
+        That is substring1+'######SPLIT_TOKEN########'+substring2: 
+        - where substring1 represents the first string represents the solution sketch of the functionality wanted in the Tool.
+        - and substring 2 is code block that contains the tool_tests. That is the unit tests already created for testing the tool. 
+        Both of them should be defined earlier in the conversation.
         """
     final_answer_format = (
         "Final answer: just return the output code block that contains the code of the Tool and a success message"
