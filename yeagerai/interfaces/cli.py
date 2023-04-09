@@ -7,6 +7,9 @@ import uuid
 from dotenv import load_dotenv
 
 from yeagerai.agent import YeagerAIAgent
+from yeagerai.memory import YeagerAIContext
+from yeagerai.memory.callbacks import KageBunshinNoJutsu
+from yeagerai.interfaces.callbacks import GitLocalRepoCallbackHandler
 
 def chat_interface():
     while True:
@@ -62,10 +65,21 @@ if __name__ == "__main__":
 
     username, session_id, session_path = create_or_restore_session()
 
+    # build context
+    y_context = YeagerAIContext(username, session_id, session_path)
+
+    # build callbacks
+    callbacks = [
+        KageBunshinNoJutsu(y_context),
+        GitLocalRepoCallbackHandler(username=username, session_path=session_path),
+    ]
+
     y_agent_builder = YeagerAIAgent(
         username=username,
         session_id=session_id,
         session_path=session_path,
+        callbacks=callbacks,
+        context=y_context,
     )
 
     # start conversation

@@ -6,33 +6,26 @@ from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import CallbackManager
 
 from yeagerai.toolkit import YeagerAIToolkit
-from yeagerai.memory import YeagerContext
+from yeagerai.memory import YeagerAIContext
 from yeagerai.agent import MASTER_TEMPLATE, YeagerAIOutputParser, YeagerAIPromptTemplate
 
 class YeagerAIAgent:
     name:str = "yeager.ai"
     description:str = "The ultimate LangChain Agent Builder."
-    # yeager_kit: YeagerAIToolkit
-    # memory: YeagerAIContext
-    # callbacks: List[Callable]
 
-    def __init__(self, username: str, session_id:str, session_path:str):
+    def __init__(self, username: str, session_id:str, session_path:str, callbacks: List[Callable], context: YeagerAIContext):
 
         self.username = username
         self.session_id = session_id
         self.session_path = session_path
-
-        # build context
-        self.y_context = YeagerContext(username, session_id, session_path)
+        self.callbacks = callbacks
+        self.context = context
 
         # build toolkit
         self.yeager_kit = YeagerAIToolkit()
         self.yeager_kit.register_tools([
 
         ])
-        # build callbacks
-        self.callbacks = []
-
 
         self.prompt = YeagerAIPromptTemplate(
             template=MASTER_TEMPLATE,
@@ -45,7 +38,7 @@ class YeagerAIAgent:
         self.llm_chain = LLMChain(
             llm=ChatOpenAI(temperature=0.2, model_name="gpt-4"),
             prompt=self.prompt,
-            memory=self.memory,
+            memory=self.context.chat_buffer_memory,
             callback_manager=CallbackManager(self.callbacks),
         )
 

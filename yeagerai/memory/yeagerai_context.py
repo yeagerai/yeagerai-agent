@@ -1,15 +1,13 @@
 import os
 
-from langchain.chat_models import ChatOpenAI
-
 # from langchain.llms import OpenAI
+from langchain.schema import messages_from_dict, messages_to_dict
 from langchain.memory import (
-    ConversationSummaryMemory,
-    CombinedMemory,
-    RedisChatMessageHistory,
+    ConversationBufferMemory,
+    ChatMessageHistory,
 )
 
-class YeagerContext:
+class YeagerAIContext:
     """Context for the @yeager.ai agent."""
 
     def __init__(self, username: str, session_id: str, session_path: str):
@@ -17,39 +15,28 @@ class YeagerContext:
         self.session_id = session_id
         self.session_path = session_path
 
-        self.session_history = RedisChatMessageHistory(session_id)
+        self.session_message_history = ChatMessageHistory()
+        self.chat_buffer_memory = ConversationBufferMemory()
 
-        self.rolling_summary_session_memory = ConversationSummaryMemory(
-            llm=ChatOpenAI(), memory_key="session_summary", input_key="input"
-        )
-        
-        # user memory
-        # entity memory
-        # shared memory (LTM) chroma DB
-
-        self.memory = CombinedMemory(
-            memories=[
-                self.rolling_summary_session_memory,
-            ]
-        )
-
-    def load_or_create_session_history(self):
+    def load_session_message_history(self):
         try:
-            self.session_history.messages = open(
-                os.path.join(self.session_path, "session_history.txt"), "r"
-            ).read()
+            with open(os.path.join(self.session_path, "session_history.txt"), "r") as f:
+                dicts = f.read()
+                self.session_message_history.messages = messages_from_dict(dicts)
         except FileNotFoundError:
             with open(os.path.join(self.session_path, "session_history.txt"), "w") as f:
                 f.close()
 
-    def store_session_history(self):
+    def save_session_message_history(self):
+        dicts = messages_to_dict(self.session_message_history.messages)
         with open(os.path.join(self.session_path, "session_history.txt"), "w") as f:
-            f.write(self.session_history.messages)
-        pass
+            f.write(dicts)
+            f.close()
 
-    def load_summary(self):
-        self.rolling_summary_session_memory.chat_memory = self.session_history.messages
+    def create_shadow_clones(self):
+        self.load_session_message_history()
+        self.chat_buffer_memory.chat_memory = self.session_message_history
 
-    def load_memory(self):
-        self.load_or_create_session_history()
-        self.load_summary()
+    def dispell_shadow_clones(self):
+        self.session_message_history = self.chat_buffer_memory.chat_memory
+        self.save_session_message_history()
