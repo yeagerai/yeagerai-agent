@@ -21,7 +21,7 @@ class KageBunshinNoJutsu(BaseCallbackHandler):
     def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
         """Save memory when agent finishes."""
         self.context_memory.dispell_shadow_clones()
-        self.context_memory.create_shadow_clones()
+        pass
 
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         pass
@@ -51,7 +51,7 @@ class KageBunshinNoJutsu(BaseCallbackHandler):
 
     def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
         """Do nothing when LLM chain ends."""
-        pass
+        self.context_memory.dispell_shadow_clones()
 
     def on_chain_error(
         self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any

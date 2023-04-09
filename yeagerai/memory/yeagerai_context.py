@@ -1,6 +1,6 @@
 import os
+import json
 
-# from langchain.llms import OpenAI
 from langchain.schema import messages_from_dict, messages_to_dict
 from langchain.memory import (
     ConversationBufferMemory,
@@ -21,7 +21,7 @@ class YeagerAIContext:
     def load_session_message_history(self):
         try:
             with open(os.path.join(self.session_path, "session_history.txt"), "r") as f:
-                dicts = f.read()
+                dicts = json.loads(f.read())
                 self.session_message_history.messages = messages_from_dict(dicts)
         except FileNotFoundError:
             os.makedirs(self.session_path, exist_ok=True)
@@ -31,7 +31,7 @@ class YeagerAIContext:
     def save_session_message_history(self):
         dicts = messages_to_dict(self.session_message_history.messages)
         with open(os.path.join(self.session_path, "session_history.txt"), "w") as f:
-            f.write(dicts)
+            f.write(json.dumps(dicts))
             f.close()
 
     def create_shadow_clones(self):
