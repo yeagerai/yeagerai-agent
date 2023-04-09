@@ -113,4 +113,7 @@ class YeagerAIAgent:
         )
 
     def run(self, input):
-        return self.agent_executor.run(input)
+        try:
+            return self.agent_executor.run(input)
+        except ValueError:
+            return "Final answer: some issues were found while parsing the output."

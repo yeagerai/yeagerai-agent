@@ -24,11 +24,13 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
     def run(self, solution_sketch_n_tool_tests: str) -> str:
         # Split the solution sketch and tool tests
-        solution_sketch = solution_sketch_n_tool_tests.split(
-            "######SPLIT_TOKEN########"
-        )[0]
-        tool_tests = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[1]
-
+        try:
+            solution_sketch = solution_sketch_n_tool_tests.split(
+                "######SPLIT_TOKEN########"
+            )[0]
+            tool_tests = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[1]
+        except IndexError:
+            return "You have not provided the split token ######SPLIT_TOKEN########, retry it providing it between the solution sketch and the tool tests."
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
             openai_api_key=self.openai_api_key,
