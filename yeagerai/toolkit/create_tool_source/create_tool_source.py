@@ -14,20 +14,27 @@ from langchain.prompts.chat import (
 )
 from .create_tool_master_prompt import CREATE_TOOL_MASTER_PROMPT
 
+
 class CreateToolSourceAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    request_timeout: int
+    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, solution_sketch_n_tool_tests: str) -> str:
-
         # Split the solution sketch and tool tests
-        solution_sketch = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[0]
+        solution_sketch = solution_sketch_n_tool_tests.split(
+            "######SPLIT_TOKEN########"
+        )[0]
         tool_tests = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[1]
 
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name=self.model_name
+            openai_api_key=self.openai_api_key,
+            model_name=self.model_name,
+            request_timeout=self.request_timeout,
+            streaming=self.streaming,
         )
 
         # Create a PromptTemplate instance with the read template
@@ -86,14 +93,14 @@ class CreateToolSourceRun(YeagerAITool):
         - and substring 2 is code block that contains the tool_tests. That is the unit tests already created for testing the tool. 
         Both of them should be defined earlier in the conversation.
         """
-    final_answer_format = (
-        "Final answer: just return the output code block that contains the code of the Tool and a success message"
-    )
+    final_answer_format = "Final answer: just return the output code block that contains the code of the Tool and a success message"
     api_wrapper: CreateToolSourceAPIWrapper
 
     def _run(self, solution_sketch_n_tool_tests: str) -> str:
         """Use the tool."""
-        return self.api_wrapper.run(solution_sketch_n_tool_tests=solution_sketch_n_tool_tests)
+        return self.api_wrapper.run(
+            solution_sketch_n_tool_tests=solution_sketch_n_tool_tests
+        )
 
     async def _arun(self, query: str) -> str:
         """Use the tool asynchronously."""

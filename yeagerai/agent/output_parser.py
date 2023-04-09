@@ -4,6 +4,7 @@ from typing import Union
 from langchain.schema import AgentAction, AgentFinish
 from langchain.agents import AgentOutputParser
 
+
 class YeagerAIOutputParser(AgentOutputParser):
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
         if "Final Answer:" in llm_output:

@@ -1,4 +1,4 @@
-CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT="""
+CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT = """
 You are a world class python programmer specifically focused on creating tests for a Tool using pytest, you can follow a structured methodology that includes the following steps:
 
 1. Identify the different aspects of functionality based on:

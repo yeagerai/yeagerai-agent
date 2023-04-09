@@ -13,18 +13,25 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
-from .create_tool_mocked_tests_master_prompt import CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT
+from .create_tool_mocked_tests_master_prompt import (
+    CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT,
+)
+
 
 class CreateToolMockedTestsAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    request_timeout: int
+    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, solution_sketch: str) -> str:
-
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name=self.model_name
+            openai_api_key=self.openai_api_key,
+            model_name=self.model_name,
+            request_timeout=self.request_timeout,
+            streaming=self.streaming,
         )
 
         # Create a PromptTemplate instance with the read template
@@ -43,7 +50,9 @@ class CreateToolMockedTestsAPIWrapper(BaseModel):
 
         # Extract the name of the class from the code block
         quick_llm = OpenAI(temperature=0)
-        class_name = quick_llm(f"Which is the name of the class that is being tested here? Return only the class_name value like a python string, without any other explanation \n {out}")
+        class_name = quick_llm(
+            f"Which is the name of the class that is being tested here? Return only the class_name value like a python string, without any other explanation \n {out}"
+        )
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(r"(```.*?```)", re.DOTALL)
@@ -78,9 +87,7 @@ class CreateToolMockedTestsRun(YeagerAITool):
         Input should be a string that represents the solution sketch of the functionality wanted in the Tool,
         It should be defined earlier in the conversation.
         """
-    final_answer_format = (
-        "Final answer: just return the output code block that contains the code of the Tool's unit tests and a success message"
-    )
+    final_answer_format = "Final answer: just return the output code block that contains the code of the Tool's unit tests and a success message"
     api_wrapper: CreateToolMockedTestsAPIWrapper
 
     def _run(self, solution_sketch: str) -> str:

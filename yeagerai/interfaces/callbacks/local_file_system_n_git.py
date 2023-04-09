@@ -77,10 +77,8 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
                 commit_message, author=self.committer, committer=self.committer
             )
 
-
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         pass
-
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         """Do nothing when a new token is generated."""
@@ -90,7 +88,6 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
         pass
-
 
     def on_llm_error(
         self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any

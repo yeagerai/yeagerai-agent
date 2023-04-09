@@ -14,15 +14,21 @@ from langchain.prompts.chat import (
 )
 from .design_solution_sketch_master_prompt import DESIGN_SOLUTION_SKETCH_MASTER_PROMPT
 
+
 class DesignSolutionSketchAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    request_timeout: int
+    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
-    def run(self, tool_description_prompt:str) -> str:
+    def run(self, tool_description_prompt: str) -> str:
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name=self.model_name
+            openai_api_key=self.openai_api_key,
+            model_name=self.model_name,
+            request_timeout=self.request_timeout,
+            streaming=self.streaming,
         )
 
         # Create a PromptTemplate instance with the read template

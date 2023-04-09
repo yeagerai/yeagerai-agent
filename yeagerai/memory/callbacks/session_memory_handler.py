@@ -10,9 +10,7 @@ from yeagerai.memory import YeagerAIContext
 class KageBunshinNoJutsu(BaseCallbackHandler):
     """Callback Handler is used to handle safe and load memory tasks."""
 
-    def __init__(
-        self, context_memory: YeagerAIContext
-    ) -> None:
+    def __init__(self, context_memory: YeagerAIContext) -> None:
         """Initialize callback handler."""
         super().__init__()
         self.context_memory = context_memory
@@ -26,7 +24,6 @@ class KageBunshinNoJutsu(BaseCallbackHandler):
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         pass
 
-
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         """Do nothing when a new token is generated."""
         pass
@@ -35,7 +32,6 @@ class KageBunshinNoJutsu(BaseCallbackHandler):
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
         pass
-
 
     def on_llm_error(
         self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any

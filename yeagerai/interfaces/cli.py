@@ -11,6 +11,7 @@ from yeagerai.memory import YeagerAIContext
 from yeagerai.memory.callbacks import KageBunshinNoJutsu
 from yeagerai.interfaces.callbacks import GitLocalRepoCallbackHandler
 
+
 def chat_interface():
     while True:
         try:
@@ -28,9 +29,7 @@ def chat_interface():
 
 @click.command()
 def main():
-    click.echo(
-        click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True)
-    )
+    click.echo(click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True))
 
     click.echo(click.style("Loading The @yeager.ai Agent Interface...", fg="green"))
     chat_interface()
@@ -76,7 +75,9 @@ if __name__ == "__main__":
 
     y_agent_builder = YeagerAIAgent(
         username=username,
-        model_name="gpt-3.5-turbo", # you can switch to gpt-4 if you have access to it 
+        model_name="gpt-4",  # you can switch to gpt-4 if you have access to it
+        request_timeout=300,
+        streaming=True,
         session_id=session_id,
         session_path=session_path,
         callbacks=callbacks,
