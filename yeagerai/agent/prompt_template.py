@@ -30,7 +30,7 @@ class YeagerAIPromptTemplate(BaseChatPromptTemplate):
         if len(dicts) == 0:
             kwargs["chat_history"] = "No previous messages in the chat."
         else:
-            kwargs["chat_history"] = "\n".join([message["type"]+": "+message["content"] for message in dicts])
+            kwargs["chat_history"] = "\n".join([message["type"]+": ("+message["data"]["content"]+")" for message in dicts])
 
         formatted = self.template.format(**kwargs)
         print(formatted)

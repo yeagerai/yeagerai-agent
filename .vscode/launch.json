@@ -10,7 +10,6 @@
             "env": {
                 "PYTHONPATH": "${workspaceRoot}"
             },
-            "args": ["--agent", "yAgentBuilder"]
         }
     ]
 }
