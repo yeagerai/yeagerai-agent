@@ -49,7 +49,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
         # Create an LLMChain instance and run the command
         chain = LLMChain(llm=chat, prompt=chat_prompt)
-        out = chain.run(solution_sketch, tool_tests)
+        out = chain.predict(solution_sketch=solution_sketch, tool_tests=tool_tests)
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(r"(```.*?```)", re.DOTALL)

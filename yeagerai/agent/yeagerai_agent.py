@@ -109,7 +109,7 @@ class YeagerAIAgent:
             allowed_tools=tool_names,
         )
         self.agent_executor = AgentExecutor.from_agent_and_tools(
-            agent=self.agent, tools=self.yeager_kit.get_tools(), verbose=True
+            agent=self.agent, tools=self.yeager_kit.get_tools(), verbose=True,
         )
 
     def run(self, input):
