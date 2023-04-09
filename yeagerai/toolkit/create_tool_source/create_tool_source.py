@@ -16,6 +16,7 @@ from .create_tool_master_prompt import CREATE_TOOL_MASTER_PROMPT
 
 class CreateToolSourceAPIWrapper(BaseModel):
     session_path: str
+    model_name: str
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, solution_sketch_n_tool_tests: str) -> str:
@@ -26,7 +27,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
 
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name="gpt-4"
+            openai_api_key=self.openai_api_key, model_name=self.model_name
         )
 
         # Create a PromptTemplate instance with the read template

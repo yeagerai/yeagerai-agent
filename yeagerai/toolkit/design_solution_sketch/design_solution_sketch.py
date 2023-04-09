@@ -16,12 +16,13 @@ from .design_solution_sketch_master_prompt import DESIGN_SOLUTION_SKETCH_MASTER_
 
 class DesignSolutionSketchAPIWrapper(BaseModel):
     session_path: str
+    model_name: str
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, tool_description_prompt:str) -> str:
         # Initialize ChatOpenAI with API key and model name
         chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
+            openai_api_key=self.openai_api_key, model_name=self.model_name
         )
 
         # Create a PromptTemplate instance with the read template

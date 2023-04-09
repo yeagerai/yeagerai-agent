@@ -76,6 +76,7 @@ if __name__ == "__main__":
 
     y_agent_builder = YeagerAIAgent(
         username=username,
+        model_name="gpt-4", # you can switch to gpt-3.5-turbo 
         session_id=session_id,
         session_path=session_path,
         callbacks=callbacks,
