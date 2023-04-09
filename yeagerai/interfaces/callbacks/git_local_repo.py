@@ -1,10 +1,9 @@
 import os
-import uuid
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from git import Repo, Actor
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain.schema import AgentAction, AgentFinish, LLMResult
+from langchain.schema import AgentFinish
 
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate, LLMChain

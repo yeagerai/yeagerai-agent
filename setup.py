@@ -2,16 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name="yeager.ai-framework",
-    version="0.0.2",
-    description="A high-level Python framework for building complex LangChain agents on-the-fly just by prompting.",
+    version="0.0.3",
+    description="The @yeagerai Agent Builder to create your custom LangChain Agents on-the-fly.",
     author="YeagerAI LLC",
     author_email="jm@yeager.ai",
     packages=find_packages(),
     install_requires=[
         "langchain",
         "openai",
-        "discord.py",
-        "PyGithub",
+        "GitPython",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

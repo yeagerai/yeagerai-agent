@@ -28,6 +28,10 @@ class YeagerContextMemory:
         self.rolling_summary_session_memory = ConversationSummaryMemory(
             llm=ChatOpenAI(), memory_key="session_summary", input_key="input"
         )
+        
+        # user memory
+        # entity memory
+        # shared memory (LTM) chroma DB
 
         self.memory = CombinedMemory(
             memories=[

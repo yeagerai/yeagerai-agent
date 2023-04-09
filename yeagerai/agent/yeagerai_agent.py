@@ -8,10 +8,9 @@ from langchain import LLMChain
 from langchain.prompts import BaseChatPromptTemplate
 from langchain.schema import HumanMessage
 from langchain.callbacks import CallbackManager
-from yeagerai.core.y_tool import YeagerTool
-from yeagerai.core.y_kit import YeagerKit
-from yeagerai.core.y_memory import YeagerContextMemory
-from yeagerai.core.y_base_agent_master_template import master_template
+from yeagerai.toolkit.yeagerai_tool import YeagerTool
+from yeagerai.memory.y_memory import YeagerContextMemory
+from yeagerai.agent.agent_master_template import master_template
 
 
 # Set up a prompt template

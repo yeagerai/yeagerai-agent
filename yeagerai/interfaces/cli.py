@@ -6,15 +6,11 @@ import uuid
 
 from dotenv import load_dotenv
 
-from yeagerai.core.y_kit import YeagerKit
-from yeagerai.agents.y_agent_builder.kit.create_tool_source.create_tool_source import (
-    CreateToolSourceRun,
-    CreateToolSourceAPIWrapper,
-)
-from yeagerai.core.y_memory import YeagerContextMemory
-from yeagerai.core.y_base_agent import YeagerBaseAgent
-from yeagerai.callbacks.curate_n_store_memory import MemoryCallbackHandler
-from yeagerai.callbacks.git_local_repo import GitLocalRepoCallbackHandler
+from yeagerai.toolkit.yeagerai_toolkit import YeagerAIToolkit
+from yeagerai.memory.y_memory import YeagerContextMemory
+from yeagerai.agent.yeagerai_agent import YeagerBaseAgent
+from yeagerai.memory.callbacks.curate_n_store_memory import MemoryCallbackHandler
+from yeagerai.interfaces.callbacks.git_local_repo import GitLocalRepoCallbackHandler
 
 
 def yAgentBuilder(prompt_text):
@@ -99,7 +95,7 @@ if __name__ == "__main__":
     )
 
     # instantiate the YeagerKit
-    tckit = YeagerKit()
+    tckit = YeagerAIToolkit()
     tckit.register_tool(
         CreateToolSourceRun(
             api_wrapper=CreateToolSourceAPIWrapper(session_path=session_path)
