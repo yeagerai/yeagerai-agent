@@ -1,1 +1,1 @@
-from .yeagerai_agent import YeagerAIAgent
+from yeagerai.agent.yeagerai_agent import YeagerAIAgent

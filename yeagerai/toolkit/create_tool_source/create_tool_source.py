@@ -12,7 +12,9 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
-from .create_tool_master_prompt import CREATE_TOOL_MASTER_PROMPT
+from yeagerai.toolkit.create_tool_source.create_tool_master_prompt import (
+    CREATE_TOOL_MASTER_PROMPT,
+)
 
 
 class CreateToolSourceAPIWrapper(BaseModel):
@@ -28,7 +30,9 @@ class CreateToolSourceAPIWrapper(BaseModel):
             solution_sketch = solution_sketch_n_tool_tests.split(
                 "######SPLIT_TOKEN########"
             )[0]
-            tool_tests = solution_sketch_n_tool_tests.split("######SPLIT_TOKEN########")[1]
+            tool_tests = solution_sketch_n_tool_tests.split(
+                "######SPLIT_TOKEN########"
+            )[1]
         except IndexError:
             return "You have not provided the split token ######SPLIT_TOKEN########, retry it providing it between the solution sketch and the tool tests."
         # Initialize ChatOpenAI with API key and model name

@@ -1,6 +1,5 @@
 """Creates the source code of a new LangChain Tool on-the-fly and writes it into session cwd."""
 import os
-import re
 
 from pydantic import BaseModel
 
@@ -12,7 +11,9 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
-from .design_solution_sketch_master_prompt import DESIGN_SOLUTION_SKETCH_MASTER_PROMPT
+from yeagerai.toolkit.design_solution_sketch.design_solution_sketch_master_prompt import (
+    DESIGN_SOLUTION_SKETCH_MASTER_PROMPT,
+)
 
 
 class DesignSolutionSketchAPIWrapper(BaseModel):

@@ -1,1 +1,1 @@
-from .yeagerai_context import YeagerAIContext
+from yeagerai.memory.yeagerai_context import YeagerAIContext

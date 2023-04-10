@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="yeagerai-agent",
-    version="0.0.3",
+    version="0.0.37",
     description="The @yeagerai Agent is used to create your custom LangChain Agents on-the-fly.",
     author="YeagerAI LLC",
     author_email="jm@yeager.ai",
@@ -14,10 +14,14 @@ setup(
         "click",
         "python-dotenv",
     ],
+    entry_points={
+        "console_scripts": [
+            "yeagerai-agent = yeagerai.interfaces.cli:main",
+        ],
+    },
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Web Environment",
-        "Framework :: YeagerAI",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",

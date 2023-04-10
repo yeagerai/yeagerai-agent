@@ -13,7 +13,7 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
-from .create_tool_mocked_tests_master_prompt import (
+from yeagerai.toolkit.create_tool_mocked_tests.create_tool_mocked_tests_master_prompt import (
     CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT,
 )
 
