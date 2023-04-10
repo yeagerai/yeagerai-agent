@@ -6,7 +6,7 @@
 Yeager.ai Agent is the first Langchain Agent creator designed to help you build, prototype, and deploy AI-powered agents with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
 
 ## Quick install
-`pip install yeagerai`
+`pip install yeagerai-agent`
 
 ## Key Features
 - 🚀 **Create and Test Agents and Tools On-The-Fly:** With this feature, you can quickly prototype and experiment with agents and tools without the need for a lengthy setup process. Great for fast-paced development and testing!
@@ -22,17 +22,20 @@ Yeager.ai Agent is the first Langchain Agent creator designed to help you build,
 To call the yeagerai Agent from the terminal, just type:
 
 ```
-yeagerai
+yeagerai-agent
 ```
 
 And start building your agents on-the-fly!
 
-### ⚠️ Warning! GPT-4 API Access Required
+### ⚠️ Warnings! 
 
+#### GPT-4 API Access Required
 If you don't have access to GPT-4 API, don't worry! You can still take advantage of Yeager.ai Agent's features through our Discord bot. 🤖
 
 [Join our Discord server](https://discord.gg/VpfmXEMN66) to get started and interact with the Yeager.ai Agent using the GPT-4-powered bot. Our friendly community is also there to assist you, answer questions, and share their experiences.
 
+#### Not tested for windows
+But if you want to contribute PRs al welcome! Just contact @jmlago#0277 on [our Discord server](https://discord.gg/VpfmXEMN66)
 ## Documentation
 For detailed information on use cases, tools, agents, toolkits, and agent executors, please visit the [Yeager.ai Agent docs]().
 
