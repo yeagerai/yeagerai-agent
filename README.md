@@ -40,4 +40,4 @@ For detailed information on use cases, tools, agents, toolkits, and agent execut
 We encourage contributions to help expand and improve the Yeager.ai Agent! Please read our [CONTRIBUTING]() for guidelines on how to submit your contributions.
 
 ## License
-Yeager.ai Agent is released under the MIT License. Please see the [LICENSE file]() for more information.
+Yeager.ai Agent is released under the MIT License. Please see the [LICENSE file](https://github.com/yeagerai/yeagerai-agent/blob/main/LICENSE) for more information.

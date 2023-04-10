@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="yeager.ai-framework",
+    name="yeagerai-agent",
     version="0.0.3",
-    description="The @yeagerai Agent Builder to create your custom LangChain Agents on-the-fly.",
+    description="The @yeagerai Agent is used to create your custom LangChain Agents on-the-fly.",
     author="YeagerAI LLC",
     author_email="jm@yeager.ai",
     packages=find_packages(),
@@ -11,6 +11,8 @@ setup(
         "langchain",
         "openai",
         "GitPython",
+        "click",
+        "python-dotenv",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
