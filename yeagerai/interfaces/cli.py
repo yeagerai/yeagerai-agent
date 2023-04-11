@@ -29,7 +29,7 @@ def pre_load():
         print(
             "Please modify the .env file inside ~/yeagerai-sessions/.env and add your OpenAI API key... "
         )
-    
+
     load_dotenv(dotenv_path=env_path)
     openai_api_key = os.getenv("OPENAI_API_KEY")
     if not openai_api_key:

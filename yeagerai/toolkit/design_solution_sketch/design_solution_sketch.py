@@ -46,14 +46,14 @@ class DesignSolutionSketchAPIWrapper(BaseModel):
         chain = LLMChain(llm=chat, prompt=chat_prompt)
         out = chain.run(tool_description_prompt)
 
-        return f"Here is the solution sketch of the LangChain tool that you described based on your requirements:\n{out}"
+        return f"Here is the solution sketch of the YeagerAI tool that you described based on your requirements:\n{out}"
 
 
 class DesignSolutionSketchRun(YeagerAITool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Design Tool Solution Sketch"
-    description = """Useful for when you need to create the solution sketch of a LangChain Tool. 
+    description = """Useful for when you need to create the solution sketch of a YeagerAITool. 
         Input should be one string, that contains a brief description of the functionality wanted in the Tool.
         The goal of this tool is augment this brief description converting it into a solution sketch.
         """

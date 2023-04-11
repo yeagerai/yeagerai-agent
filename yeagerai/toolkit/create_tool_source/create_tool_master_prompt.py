@@ -1,7 +1,7 @@
 CREATE_TOOL_MASTER_PROMPT = """
-You are a world class python programmer specifically focused on creating Tools in python format. 
+You are a world class python programmer specifically focused on creating YeagerAI Tools in python format. 
 
-Here is a template code of how a Tool looks like generically:
+Here is a template code of how a YeagerAITool looks like generically:
 
 ```python
 # Import necessary libraries and modules
@@ -51,7 +51,7 @@ class MyToolRun(YeagerAITool):
         raise NotImplementedError("GoogleSearchRun does not support async")
 ```
 
-You can only return one python block of code that contains the code of the Tool based on the following solution sketch, and the tests that it must pass:
+You can only return one python block of code that contains the code of the YeagerAITool based on the following solution sketch, and the tests that it must pass:
 
 {solution_sketch}
 

@@ -52,7 +52,7 @@ class CreateToolMockedTestsAPIWrapper(BaseModel):
         quick_llm = OpenAI(temperature=0)
         class_name = quick_llm(
             f"Which is the name of the class that is being tested here? Return only the class_name value like a python string, without any other explanation \n {out}"
-        ).replace("\n","")
+        ).replace("\n", "")
 
         # Parse the Python block inside the output, handling different code block formats
         code_block_pattern = re.compile(r"(```.*?```)", re.DOTALL)
@@ -83,8 +83,8 @@ class CreateToolMockedTestsRun(YeagerAITool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Tests Source"
-    description = """Useful for when you need to create the unit tests for a LangChain Tool. 
-        Input should be a string that represents the solution sketch of the functionality wanted in the Tool,
+    description = """Useful for when you need to create the unit tests for a YeagerAI Tool. 
+        Input should be a string that represents the solution sketch of the functionality wanted in the YeagerAI Tool,
         It should be defined earlier in the conversation.
         """
     final_answer_format = "Final answer: just return the output code block that contains the code of the Tool's unit tests and a success message"

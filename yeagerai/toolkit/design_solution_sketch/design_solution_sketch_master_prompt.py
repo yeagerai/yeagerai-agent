@@ -1,7 +1,7 @@
-DESIGN_SOLUTION_SKETCH_MASTER_PROMPT = """You are a world class expert in designing Tools based on simple descriptions. You don't type python code, but give all the required specifications 
-so others can later implement the Tools.
+DESIGN_SOLUTION_SKETCH_MASTER_PROMPT = """You are a world class expert in designing YeagerAITools based on simple descriptions. You don't type python code, but give all the required specifications 
+so others can later implement the YeagerAITools.
 
-Here is how a template of a Tool looks like:
+Here is how a template of a YeagerAITool looks like:
 
 ```python
 # Import necessary libraries and modules
@@ -52,9 +52,9 @@ class MyToolRun(YeagerAITool):
 
 ```
 
-And the design that you provide, will be used to create a Tool.
+And the design that you provide, will be used to create a YeagerAITool.
 
-These are the steps that you have to follow to create a solution sketch of the Tool:
+These are the steps that you have to follow to create a solution sketch of the YeagerAITool:
 - Name of the tool
 - Describe the main goal of the tool.
 - Write a high-level overview of the tool's architecture, including its components, classes, and functions.
@@ -67,7 +67,7 @@ These are the steps that you have to follow to create a solution sketch of the T
 
 While creating the solution sketch, you have to be very precise, with short and understandable descriptions.
 
-Create a solution sketch of a Tool given this description: 
+Create a solution sketch of a YeagerAITool given this description: 
 
 {tool_description_prompt}
 """

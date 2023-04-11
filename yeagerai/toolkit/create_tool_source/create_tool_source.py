@@ -92,14 +92,14 @@ class CreateToolSourceRun(YeagerAITool):
     """Tool that adds the capability of creating the source code of other Tools on-the-fly and writing it into cwd."""
 
     name = "Create Tool Source"
-    description = """Useful for when you need to create the source code of a LangChain Tool. 
+    description = """Useful for when you need to create the source code of a YeagerAITool. 
         Input MUST BE a string made of two substrings separated by a this token '######SPLIT_TOKEN########'.
         That is substring1+'######SPLIT_TOKEN########'+substring2: 
         - where substring1 represents the first string represents the solution sketch of the functionality wanted in the Tool.
         - and substring 2 is code block that contains the tool_tests. That is the unit tests already created for testing the tool. 
         Both of them should be defined earlier in the conversation.
         """
-    final_answer_format = "Final answer: just return the output code block that contains the code of the Tool and a success message"
+    final_answer_format = "Final answer: just return the output code block that contains the code of the YeagerAITool and a success message"
     api_wrapper: CreateToolSourceAPIWrapper
 
     def _run(self, solution_sketch_n_tool_tests: str) -> str:
