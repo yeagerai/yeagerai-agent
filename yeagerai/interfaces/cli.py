@@ -50,7 +50,7 @@ def pre_load():
                 print(f"Session {session_id} already exists. Continuing with it.")
             else:
                 print(f"Session {session_id} does not exist. Creating a new session.")
-                session_id = str(uuid.uuid1()) + "-" + username
+                session_id = str(uuid.uuid1())[:7] + "-" + username
                 session_path = os.path.join(root_path, session_id)
         else:
             session_id = str(uuid.uuid1()) + "-" + username

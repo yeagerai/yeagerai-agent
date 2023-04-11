@@ -1,8 +1,7 @@
+LOAD_N_FIX_NEW_TOOL_MASTER_PROMPT = """
 You are a world class python programmer specifically focused on fixing errors given the source code, the testing code, and the traceback of the error. 
 
 {source_code}
-
-{testing_code}
 
 {traceback}
 
@@ -21,3 +20,4 @@ Now, follow this methodology, and fix the error in the testing code or in the so
 - Refactor the code if necessary to improve its structure, organization, or performance.
 
 You can only return one python block of code that contains the fixed code of the file.
+"""
