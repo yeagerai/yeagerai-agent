@@ -76,7 +76,7 @@ class CreateToolSourceAPIWrapper(BaseModel):
             class_name_match = re.search(class_name_pattern, code)
             if class_name_match:
                 class_name = class_name_match.group(1)
-                class_name = class_name.replace("APIWrapper","")
+                class_name = class_name.replace("APIWrapper", "")
 
                 output_file = f"{class_name}.py"
                 with open(os.path.join(self.session_path, output_file), "w") as f:

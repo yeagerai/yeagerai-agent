@@ -1,5 +1,7 @@
 from typing import List, Callable
 
+from pydantic import BaseModel
+
 from langchain import LLMChain
 from langchain.agents import AgentExecutor, LLMSingleActionAgent
 from langchain.chat_models import ChatOpenAI
@@ -26,7 +28,7 @@ class YeagerAIAgent:
         streaming: bool,
         callbacks: List[Callable],
         context: YeagerAIContext,
-        toolkit: YeagerAIToolkit
+        yeager_kit: YeagerAIToolkit,
     ):
         self.username = username
         self.session_id = session_id
@@ -36,7 +38,7 @@ class YeagerAIAgent:
         self.streaming = streaming
         self.callbacks = callbacks
         self.context = context
-        self.yeager_kit = toolkit
+        self.yeager_kit = yeager_kit
 
         self.prompt = YeagerAIPromptTemplate(
             template=MASTER_TEMPLATE,

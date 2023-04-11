@@ -6,6 +6,7 @@ Here is a template code of how a YeagerAITool looks like generically:
 # Import necessary libraries and modules
 import ...
 from pydantic import BaseModel
+from yeagerai.toolkit.yeagerai_tool import YeagerAITool
 # Define the base class (if not already defined in a separate file)
 
 # Define the tool class
@@ -14,16 +15,12 @@ class MyToolAPIWrapper(BaseModel):
         # Initialize attributes
         ...
 
-    def run(self, ...):
+    def run(self, query: str) -> str:
         # Main method for running the tool
         # Validate input
         # Call APIs or perform main functionality
         # Handle errors and edge cases
         # Return the output
-        ...
-
-    async def _arun(self, ...):
-        # Asynchronous main method (if applicable)
         ...
 
     def _helper_function(self, ...):
@@ -49,6 +46,12 @@ class MyToolRun(YeagerAITool):
         \"\"\"Use the tool asynchronously.\"\"\"
         raise NotImplementedError("GoogleSearchRun does not support async")
 ```
+IMPORTANT: 
+- There must be two classes, the (class_name)Run and the (class_name)APIWrapper. The (class_name)Run class must inherit from YeagerAITool, and the (class_name)APIWrapper class must inherit from BaseModel.
+- You can only return one python block of code that contains the code of the YeagerAITool based on the following solution sketch, and the tests that it must pass:
+- The run method of the (class_name)APIWrapper and the _run method of the (class_name)Run MUST HAVE ONLY ONE ARGUMENT, which is the query and is a string, and ONLY ONE output that is a string.
+- api_wrapper, name, description, and final_answer_format are class attributes.
+- Both classes must not have an __init__ method. And api_wrapper must not be instantiated, just typed.
 
 You must follow this structured methodology to create the unit tests of the YeagerAITool outlined in the sketch that includes the following steps:
 

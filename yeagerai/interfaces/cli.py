@@ -19,6 +19,8 @@ from yeagerai.toolkit import (
     DesignSolutionSketchRun,
     CreateToolMockedTestsAPIWrapper,
     CreateToolMockedTestsRun,
+    LoadNFixNewToolAPIWrapper,
+    LoadNFixNewToolRun,
 )
 
 
@@ -63,7 +65,7 @@ def pre_load():
                 session_id = str(uuid.uuid1())[:7] + "-" + username
                 session_path = os.path.join(root_path, session_id)
         else:
-            session_id = str(uuid.uuid1()) + "-" + username
+            session_id = str(uuid.uuid1())[:7] + "-" + username
             session_path = os.path.join(root_path, session_id)
     else:
         session_id = None
@@ -72,13 +74,34 @@ def pre_load():
     return has_api_key, username, session_id, session_path, env_path
 
 
-def chat_interface(agent):
+def chat_interface(
+    username,
+    model_name,
+    request_timeout,
+    streaming,
+    session_id,
+    session_path,
+    callbacks,
+    yeager_kit,
+    y_context,
+):
     while True:
         try:
             prompt_text = input("\n\nEnter your prompt (Type :q to quit):\n\n> ")
             if prompt_text == ":q":
                 break
 
+            agent = YeagerAIAgent(
+                username=username,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+                session_id=session_id,
+                session_path=session_path,
+                callbacks=callbacks,
+                yeager_kit=yeager_kit,
+                context=y_context,
+            )
             agent.run(prompt_text)
 
         except KeyboardInterrupt:
@@ -95,7 +118,7 @@ def main():
         print("Exiting...")
         return
 
-    model_name = "gpt-4" # you can switch to gpt-3.5-turbo but is not tested
+    model_name = "gpt-4"  # you can switch to gpt-3.5-turbo but is not tested
     request_timeout = 300
     streaming = True
 
@@ -141,21 +164,31 @@ def main():
         ),
     )
 
-    y_agent_builder = YeagerAIAgent(
-        username=username,
-        model_name=model_name,
-        request_timeout=request_timeout,
-        streaming=streaming,
-        session_id=session_id,
-        session_path=session_path,
-        callbacks=callbacks,
-        toolkit=yeager_kit,
-        context=y_context,
+    yeager_kit.register_tool(
+        LoadNFixNewToolRun(
+            api_wrapper=LoadNFixNewToolAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+                toolkit=yeager_kit,
+            )
+        ),
     )
 
     click.echo(click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True))
     click.echo(click.style("Loading The @yeager.ai Agent Interface...", fg="green"))
-    chat_interface(y_agent_builder)
+    chat_interface(
+        username,
+        model_name,
+        request_timeout,
+        streaming,
+        session_id,
+        session_path,
+        callbacks,
+        yeager_kit,
+        y_context,
+    )
 
 
 if __name__ == "__main__":

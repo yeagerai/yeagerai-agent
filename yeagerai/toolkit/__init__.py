@@ -13,3 +13,8 @@ from yeagerai.toolkit.create_tool_mocked_tests.create_tool_mocked_tests import (
     CreateToolMockedTestsAPIWrapper,
     CreateToolMockedTestsRun,
 )
+
+from yeagerai.toolkit.load_n_fix_new_tool.load_n_fix_new_tool import (
+    LoadNFixNewToolAPIWrapper,
+    LoadNFixNewToolRun,
+)

@@ -18,6 +18,7 @@ from yeagerai.toolkit.load_n_fix_new_tool.load_n_fix_new_tool_master_prompt impo
 )
 from yeagerai.toolkit import YeagerAIToolkit
 
+
 class LoadNFixNewToolAPIWrapper(BaseModel):
     session_path: str
     model_name: str
@@ -26,15 +27,18 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
     toolkit: YeagerAIToolkit
 
+    class Config:
+        arbitrary_types_allowed = True
+
     def run(self, new_tool_path: str) -> str:
         # try to load the file
         try:
-            with open(new_tool_path, "r") as f:
+            with open(new_tool_path.strip(")").strip('"').strip(" "), "r") as f:
                 source_code = f.read()
                 f.close()
         except FileNotFoundError:
             return "Error: The provided path is not correct. Please try again."
-        
+
         class_name = new_tool_path.split("/")[-1].split(".")[0]
 
         try:
@@ -45,13 +49,9 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
             # load the imported classes into the toolkit
             class_api_wrapper = getattr(myfile, class_name + "APIWrapper")
             class_run = getattr(myfile, class_name + "Run")
-            class_run(api_wrapper=class_api_wrapper)
-            self.toolkit.register_tool(
-                class_run(api_wrapper=class_api_wrapper())
-            )
+            self.toolkit.register_tool(class_run(api_wrapper=class_api_wrapper()))
 
         except Exception as traceback:
-
             # Initialize ChatOpenAI with API key and model name
             chat = ChatOpenAI(
                 openai_api_key=self.openai_api_key,
@@ -67,7 +67,9 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
             )
 
             # Create a HumanMessagePromptTemplate instance with the master prompt
-            human_message_prompt = HumanMessagePromptTemplate(prompt=y_tool_master_prompt)
+            human_message_prompt = HumanMessagePromptTemplate(
+                prompt=y_tool_master_prompt
+            )
             chat_prompt = ChatPromptTemplate.from_messages([human_message_prompt])
 
             # Create an LLMChain instance and run the command
@@ -94,8 +96,16 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
                     f.write(code)
                     f.close()
 
-                return f"The file {class_name}.py has been improved!\n"
-        return "The {class_name} tool has been loaded into your toolkit, Now you can use it as any other tool."
+                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n"
+            else:
+                # Write the {class_name}.py file inside the user-defined session_path
+                output_file = f"{class_name}.py"
+                with open(os.path.join(self.session_path, output_file), "w") as f:
+                    f.write(out)
+                    f.close()
+                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n"
+
+        return f"The {class_name} tool has been loaded into your toolkit, Now you can use it as any other tool."
 
 
 class LoadNFixNewToolRun(YeagerAITool):
@@ -105,6 +115,8 @@ class LoadNFixNewToolRun(YeagerAITool):
     description = """Useful for when you want to load a YeagerAITool into your toolkit. 
         Input MUST BE a string containing the path to the YeagerAITool file. Example: "/home/user/.yeagerai-sessions/session_id/class_name.py" 
         It should be defined earlier in the conversation.
+        This tool is perfect for loading and executing Python scripts on local machines.
+        YOU CAN NOT ANSWER: As an AI, I am unable to access files on your local machine or perform actions beyond my capabilities. Or similar sentences.
         """
     final_answer_format = """Final answer: just return the message explaining:
       if the tool still has errors but has been improved or 
@@ -113,9 +125,7 @@ class LoadNFixNewToolRun(YeagerAITool):
 
     def _run(self, new_tool_path: str) -> str:
         """Use the tool."""
-        return self.api_wrapper.run(
-            new_tool_path=new_tool_path
-        )
+        return self.api_wrapper.run(new_tool_path=new_tool_path)
 
     async def _arun(self, query: str) -> str:
         """Use the tool asynchronously."""
