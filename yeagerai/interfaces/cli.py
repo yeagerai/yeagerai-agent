@@ -11,13 +11,23 @@ from yeagerai.memory import YeagerAIContext
 from yeagerai.memory.callbacks import KageBunshinNoJutsu
 from yeagerai.interfaces.callbacks import GitLocalRepoCallbackHandler
 
+from yeagerai.toolkit import (
+    YeagerAIToolkit,
+    CreateToolSourceAPIWrapper,
+    CreateToolSourceRun,
+    DesignSolutionSketchAPIWrapper,
+    DesignSolutionSketchRun,
+    CreateToolMockedTestsAPIWrapper,
+    CreateToolMockedTestsRun,
+)
+
 
 def pre_load():
     # Init variables
     has_api_key = True
     username = getpass.getuser()
     home_path = os.path.expanduser("~")
-    root_path = os.path.join(home_path, "yeagerai-sessions")
+    root_path = os.path.join(home_path, ".yeagerai-sessions")
     os.makedirs(root_path, exist_ok=True)
 
     # Checking OPENAI_API_KEY
@@ -27,14 +37,14 @@ def pre_load():
             f.write(f"OPENAI_API_KEY=1234")
         has_api_key = False
         print(
-            "Please modify the .env file inside ~/yeagerai-sessions/.env and add your OpenAI API key... "
+            "Please modify the .env file inside ~/.yeagerai-sessions/.env and add your OpenAI API key... "
         )
 
     load_dotenv(dotenv_path=env_path)
     openai_api_key = os.getenv("OPENAI_API_KEY")
     if not openai_api_key:
         print(
-            "Please modify the .env file inside ~/yeagerai-sessions/.env and add your OpenAI API key... "
+            "Please modify the .env file inside ~/.yeagerai-sessions/.env and add your OpenAI API key... "
         )
         has_api_key = False
 
@@ -85,6 +95,10 @@ def main():
         print("Exiting...")
         return
 
+    model_name = "gpt-4" # you can switch to gpt-3.5-turbo but is not tested
+    request_timeout = 300
+    streaming = True
+
     # build context
     y_context = YeagerAIContext(username, session_id, session_path)
 
@@ -94,16 +108,51 @@ def main():
         GitLocalRepoCallbackHandler(username=username, session_path=session_path),
     ]
 
+    # toolkit
+    yeager_kit = YeagerAIToolkit()
+    yeager_kit.register_tool(
+        DesignSolutionSketchRun(
+            api_wrapper=DesignSolutionSketchAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
+    )
+    yeager_kit.register_tool(
+        CreateToolMockedTestsRun(
+            api_wrapper=CreateToolMockedTestsAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
+    )
+    yeager_kit.register_tool(
+        CreateToolSourceRun(
+            api_wrapper=CreateToolSourceAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
+    )
+
     y_agent_builder = YeagerAIAgent(
         username=username,
-        model_name="gpt-4",  # you can switch to gpt-4 if you have access to it
-        request_timeout=300,
-        streaming=True,
+        model_name=model_name,
+        request_timeout=request_timeout,
+        streaming=streaming,
         session_id=session_id,
         session_path=session_path,
         callbacks=callbacks,
+        toolkit=yeager_kit,
         context=y_context,
     )
+
     click.echo(click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True))
     click.echo(click.style("Loading The @yeager.ai Agent Interface...", fg="green"))
     chat_interface(y_agent_builder)

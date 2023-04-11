@@ -5,15 +5,7 @@ from langchain.agents import AgentExecutor, LLMSingleActionAgent
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import CallbackManager
 
-from yeagerai.toolkit import (
-    YeagerAIToolkit,
-    CreateToolSourceAPIWrapper,
-    CreateToolSourceRun,
-    DesignSolutionSketchAPIWrapper,
-    DesignSolutionSketchRun,
-    CreateToolMockedTestsAPIWrapper,
-    CreateToolMockedTestsRun,
-)
+from yeagerai.toolkit import YeagerAIToolkit
 from yeagerai.memory import YeagerAIContext
 from yeagerai.agent.output_parser import YeagerAIOutputParser
 from yeagerai.agent.prompt_template import YeagerAIPromptTemplate
@@ -34,6 +26,7 @@ class YeagerAIAgent:
         streaming: bool,
         callbacks: List[Callable],
         context: YeagerAIContext,
+        toolkit: YeagerAIToolkit
     ):
         self.username = username
         self.session_id = session_id
@@ -43,39 +36,7 @@ class YeagerAIAgent:
         self.streaming = streaming
         self.callbacks = callbacks
         self.context = context
-
-        # build toolkit
-        self.yeager_kit = YeagerAIToolkit()
-        self.yeager_kit.register_tool(
-            DesignSolutionSketchRun(
-                api_wrapper=DesignSolutionSketchAPIWrapper(
-                    session_path=self.session_path,
-                    model_name=self.model_name,
-                    request_timeout=self.request_timeout,
-                    streaming=self.streaming,
-                )
-            ),
-        )
-        self.yeager_kit.register_tool(
-            CreateToolMockedTestsRun(
-                api_wrapper=CreateToolMockedTestsAPIWrapper(
-                    session_path=self.session_path,
-                    model_name=self.model_name,
-                    request_timeout=self.request_timeout,
-                    streaming=self.streaming,
-                )
-            ),
-        )
-        self.yeager_kit.register_tool(
-            CreateToolSourceRun(
-                api_wrapper=CreateToolSourceAPIWrapper(
-                    session_path=self.session_path,
-                    model_name=self.model_name,
-                    request_timeout=self.request_timeout,
-                    streaming=self.streaming,
-                )
-            ),
-        )
+        self.yeager_kit = toolkit
 
         self.prompt = YeagerAIPromptTemplate(
             template=MASTER_TEMPLATE,

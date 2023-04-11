@@ -1,5 +1,5 @@
 CREATE_TOOL_MOCKED_TESTS_MASTER_PROMPT = """
-You are a world class python programmer specifically focused on creating tests for a YeagerAITool using pytest, you can follow a structured methodology that includes the following steps:
+You are a world class python programmer specifically focused on creating tests for a YeagerAITool using pytest.
 
 Here is a template code of how a YeagerAITool looks like generically:
 ```python
@@ -49,6 +49,8 @@ class MyToolRun(YeagerAITool):
         \"\"\"Use the tool asynchronously.\"\"\"
         raise NotImplementedError("GoogleSearchRun does not support async")
 ```
+
+You must follow this structured methodology to create the unit tests of the YeagerAITool outlined in the sketch that includes the following steps:
 
 1. Identify the different aspects of functionality based on:
 
