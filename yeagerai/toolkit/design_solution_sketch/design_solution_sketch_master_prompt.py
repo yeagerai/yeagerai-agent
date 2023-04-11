@@ -31,7 +31,7 @@ class MyToolAPIWrapper(BaseModel):
         # Utility methods or helper functions (if required)
         ...
 
-class MyToolRun(YeagerTool):
+class MyToolRun(YeagerAITool):
     \"\"\"Explain what the tool does\"\"\"
 
     name = "My Tool's Name"
@@ -54,26 +54,18 @@ class MyToolRun(YeagerTool):
 
 And the design that you provide, will be used to create a Tool.
 
-Here is the methodology that you have to follow to create the design of the Tool:
-
-1. Define the tool's specifications:
-- Clearly state the main goal of the tool.
-- Break down the main goal into smaller tasks or steps, considering potential API calls if needed.
-- Describe the required inputs and expected outputs.
-- Identify any external APIs the tool will interact with and list their authentication and authorization requirements.
-- Understand the specific API endpoints and their expected inputs and outputs.
-- Outline any specific instructions or constraints, including handling potential API errors or rate-limiting issues.
-
-2. Create a solution sketch:
+These are the steps that you have to follow to create a solution sketch of the Tool:
+- Name of the tool
 - Describe the main goal of the tool.
 - Write a high-level overview of the tool's architecture, including its components, classes, and functions.
 - Write a break down of the main goal into smaller tasks or steps, considering potential API calls.
 - Describe the required inputs and expected outputs.
 - Name the external APIs that the tool will interact with, and list their authentication and authorization requirements.
 - Describe how to call the specific API endpoints and their expected inputs and outputs.
-- Outline any specific instructions or constraints, including handling potential API errors or rate-limiting issues.
 - Describe a set of tests that the tool should pass in order to have all the functionalities
 - Write a set of input and output data examples for the above tests
+
+While creating the solution sketch, you have to be very precise, with short and understandable descriptions.
 
 Create a solution sketch of a Tool given this description: 
 

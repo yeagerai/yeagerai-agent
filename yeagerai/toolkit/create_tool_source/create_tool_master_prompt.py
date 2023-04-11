@@ -31,25 +31,24 @@ class MyToolAPIWrapper(BaseModel):
         # Utility methods or helper functions (if required)
         ...
 
-class MyToolRun(YeagerTool):
-    "Explain what the tool does"
+class MyToolRun(YeagerAITool):
+    \"\"\"Explain what the tool does\"\"\"
 
     name = "My Tool's Name"
     description = (
-        "Describe when it is useful to use the tool.
-        And an example of its inputs explained"
+        \"\"\"Describe when it is useful to use the tool.
+        And an example of its inputs explained\"\"\"
     )
     final_answer_format = "Final answer: describe which is the output message of the tool"
     api_wrapper: MyToolAPIWrapper
 
     def _run(self, query: str) -> str:
-        "Use the tool."
+        \"\"\"Use the tool.\"\"\"
         return self.api_wrapper.run(query)
 
     async def _arun(self, query: str) -> str:
-        "Use the tool asynchronously."
+        \"\"\"Use the tool asynchronously.\"\"\"
         raise NotImplementedError("GoogleSearchRun does not support async")
-
 ```
 
 You can only return one python block of code that contains the code of the Tool based on the following solution sketch, and the tests that it must pass:
