@@ -37,7 +37,7 @@ If you don't have access to GPT-4 API, don't worry! You can still take advantage
 #### Not tested for windows
 But if you want to contribute PRs al welcome! Just contact @jmlago#0277 on [our Discord server](https://discord.gg/VpfmXEMN66)
 ## Documentation
-For detailed information on use cases, tools, agents, toolkits, and agent executors, please visit the [Yeager.ai Agent docs]().
+For detailed information on use cases, tools, agents, toolkits, and agent executors, please visit the [Yeager.ai Agent docs](https://yeagerai.gitbook.io/docs).
 
 ## Contributing
 We encourage contributions to help expand and improve the Yeager.ai Agent! Please read our [CONTRIBUTING]() for guidelines on how to submit your contributions.

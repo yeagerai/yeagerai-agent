@@ -1,8 +1,13 @@
-CREATE_TOOL_MASTER_PROMPT = """
-You are a world class python programmer specifically focused on creating YeagerAI Tools in python format. 
+LOAD_N_FIX_NEW_TOOL_MASTER_PROMPT = """
+You are a world class python programmer specifically focused on fixing errors given the source code of a YeagerAITool, and the traceback of the error. 
 
-Here is a template code of how a YeagerAITool looks like generically:
+The source code:
+{source_code}
 
+The traceback:
+{traceback}
+
+YeagerAITool template:
 ```python
 # Import necessary libraries and modules
 import ...
@@ -46,6 +51,7 @@ class MyToolRun(YeagerAITool):
     async def _arun(self, query: str) -> str:
         \"\"\"Use the tool asynchronously.\"\"\"
         raise NotImplementedError("GoogleSearchRun does not support async")
+
 ```
 IMPORTANT: 
 - There must be two classes, the (class_name)Run and the (class_name)APIWrapper. The (class_name)Run class must inherit from YeagerAITool, and the (class_name)APIWrapper class must inherit from BaseModel.
@@ -54,7 +60,15 @@ IMPORTANT:
 - api_wrapper, name, description, and final_answer_format are class attributes.
 - Both classes must not have an __init__ method. And api_wrapper must not be instantiated, just typed. That is because the YeagerAITool class inherits from BaseModel. So basically api_wrapper just needs the type, no instantiation.
 
-{solution_sketch}
 
-{tool_tests}
+Now, follow this methodology, and fix the error in the provided source code:
+
+1. Develop a plan to fix the error:
+- For the identified error, develop a plan to address its root cause. This could involve correcting syntax, refactoring the code, or redesigning parts of the code.
+- Prioritize the error based on their impact on the functionality, the complexity of the fix.
+
+2. Implement the fixes:
+- Apply the planned fixes to the code, ensuring that they address the root causes of the error and don't introduce new issues.
+
+You can only return one python block of code that contains the fixed code of the file.
 """

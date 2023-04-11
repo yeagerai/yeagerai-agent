@@ -7,10 +7,11 @@ from langchain.agents.agent_toolkits.base import BaseToolkit
 from langchain.tools import BaseTool
 
 
-class YeagerAIToolkit(BaseToolkit):
+class YeagerAIToolkit:
     """Toolkit for interacting with a JSON spec."""
 
-    tools_list: List[BaseTool] = []
+    def __init__(self) -> None:
+        self.tools_list: List[BaseTool] = []
 
     def get_tools(self) -> List[BaseTool]:
         """Get the tools in the toolkit."""

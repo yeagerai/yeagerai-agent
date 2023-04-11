@@ -11,13 +11,25 @@ from yeagerai.memory import YeagerAIContext
 from yeagerai.memory.callbacks import KageBunshinNoJutsu
 from yeagerai.interfaces.callbacks import GitLocalRepoCallbackHandler
 
+from yeagerai.toolkit import (
+    YeagerAIToolkit,
+    CreateToolSourceAPIWrapper,
+    CreateToolSourceRun,
+    DesignSolutionSketchAPIWrapper,
+    DesignSolutionSketchRun,
+    CreateToolMockedTestsAPIWrapper,
+    CreateToolMockedTestsRun,
+    LoadNFixNewToolAPIWrapper,
+    LoadNFixNewToolRun,
+)
+
 
 def pre_load():
     # Init variables
     has_api_key = True
     username = getpass.getuser()
     home_path = os.path.expanduser("~")
-    root_path = os.path.join(home_path, "yeagerai-sessions")
+    root_path = os.path.join(home_path, ".yeagerai-sessions")
     os.makedirs(root_path, exist_ok=True)
 
     # Checking OPENAI_API_KEY
@@ -27,14 +39,14 @@ def pre_load():
             f.write(f"OPENAI_API_KEY=1234")
         has_api_key = False
         print(
-            "Please modify the .env file inside ~/yeagerai-sessions/.env and add your OpenAI API key... "
+            "Please modify the .env file inside ~/.yeagerai-sessions/.env and add your OpenAI API key... "
         )
-    
+
     load_dotenv(dotenv_path=env_path)
     openai_api_key = os.getenv("OPENAI_API_KEY")
     if not openai_api_key:
         print(
-            "Please modify the .env file inside ~/yeagerai-sessions/.env and add your OpenAI API key... "
+            "Please modify the .env file inside ~/.yeagerai-sessions/.env and add your OpenAI API key... "
         )
         has_api_key = False
 
@@ -50,10 +62,10 @@ def pre_load():
                 print(f"Session {session_id} already exists. Continuing with it.")
             else:
                 print(f"Session {session_id} does not exist. Creating a new session.")
-                session_id = str(uuid.uuid1()) + "-" + username
+                session_id = str(uuid.uuid1())[:7] + "-" + username
                 session_path = os.path.join(root_path, session_id)
         else:
-            session_id = str(uuid.uuid1()) + "-" + username
+            session_id = str(uuid.uuid1())[:7] + "-" + username
             session_path = os.path.join(root_path, session_id)
     else:
         session_id = None
@@ -62,13 +74,34 @@ def pre_load():
     return has_api_key, username, session_id, session_path, env_path
 
 
-def chat_interface(agent):
+def chat_interface(
+    username,
+    model_name,
+    request_timeout,
+    streaming,
+    session_id,
+    session_path,
+    callbacks,
+    yeager_kit,
+    y_context,
+):
     while True:
         try:
             prompt_text = input("\n\nEnter your prompt (Type :q to quit):\n\n> ")
             if prompt_text == ":q":
                 break
 
+            agent = YeagerAIAgent(
+                username=username,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+                session_id=session_id,
+                session_path=session_path,
+                callbacks=callbacks,
+                yeager_kit=yeager_kit,
+                context=y_context,
+            )
             agent.run(prompt_text)
 
         except KeyboardInterrupt:
@@ -85,6 +118,10 @@ def main():
         print("Exiting...")
         return
 
+    model_name = "gpt-4"  # you can switch to gpt-3.5-turbo but is not tested
+    request_timeout = 300
+    streaming = True
+
     # build context
     y_context = YeagerAIContext(username, session_id, session_path)
 
@@ -94,19 +131,64 @@ def main():
         GitLocalRepoCallbackHandler(username=username, session_path=session_path),
     ]
 
-    y_agent_builder = YeagerAIAgent(
-        username=username,
-        model_name="gpt-4",  # you can switch to gpt-4 if you have access to it
-        request_timeout=300,
-        streaming=True,
-        session_id=session_id,
-        session_path=session_path,
-        callbacks=callbacks,
-        context=y_context,
+    # toolkit
+    yeager_kit = YeagerAIToolkit()
+    yeager_kit.register_tool(
+        DesignSolutionSketchRun(
+            api_wrapper=DesignSolutionSketchAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
     )
+    yeager_kit.register_tool(
+        CreateToolMockedTestsRun(
+            api_wrapper=CreateToolMockedTestsAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
+    )
+    yeager_kit.register_tool(
+        CreateToolSourceRun(
+            api_wrapper=CreateToolSourceAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+            )
+        ),
+    )
+
+    yeager_kit.register_tool(
+        LoadNFixNewToolRun(
+            api_wrapper=LoadNFixNewToolAPIWrapper(
+                session_path=session_path,
+                model_name=model_name,
+                request_timeout=request_timeout,
+                streaming=streaming,
+                toolkit=yeager_kit,
+            )
+        ),
+    )
+
     click.echo(click.style("Welcome to the @yeager.ai CLI!\n", fg="green", bold=True))
     click.echo(click.style("Loading The @yeager.ai Agent Interface...", fg="green"))
-    chat_interface(y_agent_builder)
+    chat_interface(
+        username,
+        model_name,
+        request_timeout,
+        streaming,
+        session_id,
+        session_path,
+        callbacks,
+        yeager_kit,
+        y_context,
+    )
 
 
 if __name__ == "__main__":
