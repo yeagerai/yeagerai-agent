@@ -31,7 +31,7 @@ class MyToolAPIWrapper(BaseModel):
 class MyToolRun(YeagerAITool):
     \"\"\"Explain what the tool does\"\"\"
 
-    api_wrapper: MyToolAPIWrapper
+    api_wrapper: MyToolAPIWrapper # IMPORTANT: note that the api_wrapper must be defined with a colon, not an equal sign
     name = "My Tool's Name"
     description = (
         \"\"\"Describe when it is useful to use the tool.
@@ -53,7 +53,7 @@ IMPORTANT:
 - You can only return one python block of code that contains the code of the YeagerAITool based on the following solution sketch, and the tests that it must pass:
 - The run method of the (class_name)APIWrapper and the _run method of the (class_name)Run MUST HAVE ONLY ONE ARGUMENT, which is the query and is a string, and ONLY ONE output that is a string.
 - api_wrapper, name, description, and final_answer_format are class attributes.
-- Both classes must not have an __init__ method. And api_wrapper must not be instantiated, just typed.
+- Both classes must not have an __init__ method. And api_wrapper must not be instantiated, just typed. That is because the YeagerAITool class inherits from BaseModel. So basically api_wrapper just needs the type, no instantiation.
 
 And the design that you provide, will be used to create a YeagerAITool.
 

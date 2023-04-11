@@ -99,7 +99,7 @@ class CreateToolSourceRun(YeagerAITool):
         - and substring 2 is code block that contains the tool_tests. That is the unit tests already created for testing the tool. 
         Both of them should be defined earlier in the conversation.
         """
-    final_answer_format = "Final answer: just return the output code block that contains the code of the YeagerAITool and a success message"
+    final_answer_format = "Final answer: just return a success message saying the path where the class was written"
     api_wrapper: CreateToolSourceAPIWrapper
 
     def _run(self, solution_sketch_n_tool_tests: str) -> str:

@@ -58,7 +58,7 @@ class DesignSolutionSketchRun(YeagerAITool):
         The goal of this tool is augment this brief description converting it into a solution sketch.
         """
     final_answer_format = (
-        "Final answer: just return the solution sketch that you have designed."
+        "Final answer: just return a message just saying that the solution sketch was created."
     )
     api_wrapper: DesignSolutionSketchAPIWrapper
 
