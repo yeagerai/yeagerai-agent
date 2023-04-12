@@ -33,11 +33,11 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
     def run(self, new_tool_path: str) -> str:
         # try to load the file
         try:
-            with open(new_tool_path.strip(")").strip('"').strip(" "), "r") as f:
+            with open(new_tool_path.strip(")").strip('"').strip(" ").strip("\n"), "r") as f:
                 source_code = f.read()
                 f.close()
-        except FileNotFoundError:
-            return "Error: The provided path is not correct. Please try again."
+        except FileNotFoundError as traceback:
+            return f"Error: The provided path is not correct. Please try again.\n Traceback: {traceback}"
 
         class_name = new_tool_path.split("/")[-1].split(".")[0]
 
@@ -96,14 +96,14 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
                     f.write(code)
                     f.close()
 
-                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n"
+                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n Traceback: {traceback}"
             else:
                 # Write the {class_name}.py file inside the user-defined session_path
                 output_file = f"{class_name}.py"
                 with open(os.path.join(self.session_path, output_file), "w") as f:
                     f.write(out)
                     f.close()
-                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n"
+                return f"The file {class_name}.py has been improved but it was not loaded into the toolkit.\n Traceback: {traceback}"
 
         return f"The {class_name} tool has been loaded into your toolkit, Now you can use it as any other tool."
 
