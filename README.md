@@ -5,6 +5,8 @@
 
 Yeager.ai Agent is the first Langchain Agent creator designed to help you build, prototype, and deploy AI-powered agents with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
 
+[![See yAgents In Action!](https://20388104.fs1.hubspotusercontent-na1.net/hubfs/20388104/U8_RmQdZehk-00023.jpg)](https://youtu.be/U8_RmQdZehk)
+
 ## Quick install
 `pip install yeagerai-agent`
 
