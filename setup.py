@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="yeagerai-agent",
-    version="0.0.38",
+    version="0.0.39",
     description="The @yeagerai Agent is used to create your custom LangChain Agents on-the-fly.",
     author="YeagerAI LLC",
     author_email="jm@yeager.ai",
