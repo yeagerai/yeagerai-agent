@@ -4,16 +4,27 @@ from typing import Union
 from langchain.schema import AgentAction, AgentFinish
 from langchain.agents import AgentOutputParser
 
+def treat_reflections_and_strategy():
+    # Move that to the KageBunshin callback for updating the context based on the reflection and strategy
+    pass
+
 
 class YeagerAIOutputParser(AgentOutputParser):
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
-        if "Final Answer:" in llm_output:
+        if "Feedback Request:" in llm_output:
+            treat_reflections_and_strategy()
             return AgentFinish(
-                # Return values is generally always a dictionary with a single `output` key
-                # It is not recommended to try anything else at the moment :)
+                return_values={"output": llm_output.split("Feedback Request:")[-1].strip()},
+                log=llm_output,
+            )
+
+        if "Final Answer:" in llm_output:
+            treat_reflections_and_strategy()
+            return AgentFinish(
                 return_values={"output": llm_output.split("Final Answer:")[-1].strip()},
                 log=llm_output,
             )
+        
         regex = r"Action: (.*?)[\n]*Action Input:[\s]*(.*)"
         match = re.search(regex, llm_output, re.DOTALL)
         if not match:
