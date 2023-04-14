@@ -9,6 +9,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "langchain",
+        "chromadb",
         "openai",
         "GitPython",
         "click",

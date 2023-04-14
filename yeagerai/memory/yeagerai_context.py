@@ -16,6 +16,8 @@ class YeagerAIContext:
         self.session_id = session_id
         self.session_path = session_path
 
+        self.session_knowledge_db_connector = ""
+
         self.session_message_history = ChatMessageHistory()
         self.chat_buffer_memory = ConversationBufferMemory(
             memory_key="chat_history", input_key="input"

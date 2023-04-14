@@ -113,7 +113,7 @@ class LoadNFixNewToolRun(YeagerAITool):
 
     name = "Load and Fix New Tool"
     description = """Useful for when you want to load a YeagerAITool into your toolkit. 
-        Input MUST BE a string containing the path to the YeagerAITool file. Example: "/home/user/.yeagerai-sessions/session_id/class_name.py" 
+        Input MUST BE a string containing the path to the YeagerAITool file. Example: "/home/user/.yeagerai-sessions/session_id/className.py" 
         It should be defined earlier in the conversation.
         This tool is perfect for loading and executing Python scripts on local machines.
         YOU CAN NOT ANSWER: As an AI, I am unable to access files on your local machine or perform actions beyond my capabilities. Or similar sentences.
