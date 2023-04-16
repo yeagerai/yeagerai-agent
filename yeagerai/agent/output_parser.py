@@ -4,6 +4,7 @@ from typing import Union
 from langchain.schema import AgentAction, AgentFinish
 from langchain.agents import AgentOutputParser
 
+
 def treat_reflections_and_strategy():
     # Move that to the KageBunshin callback for updating the context based on the reflection and strategy
     pass
@@ -14,7 +15,9 @@ class YeagerAIOutputParser(AgentOutputParser):
         if "Feedback Request:" in llm_output:
             treat_reflections_and_strategy()
             return AgentFinish(
-                return_values={"output": llm_output.split("Feedback Request:")[-1].strip()},
+                return_values={
+                    "output": llm_output.split("Feedback Request:")[-1].strip()
+                },
                 log=llm_output,
             )
 
@@ -24,7 +27,7 @@ class YeagerAIOutputParser(AgentOutputParser):
                 return_values={"output": llm_output.split("Final Answer:")[-1].strip()},
                 log=llm_output,
             )
-        
+
         regex = r"Action: (.*?)[\n]*Action Input:[\s]*(.*)"
         match = re.search(regex, llm_output, re.DOTALL)
         if not match:

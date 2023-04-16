@@ -3,7 +3,13 @@
 
 [![](https://dcbadge.vercel.app/api/server/VpfmXEMN66?compact=true&style=flat)](https://discord.gg/VpfmXEMN66) [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/yeagerai.svg?style=social&label=Follow%20%40YeagerAI)](https://twitter.com/yeagerai) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit/) 
 
-Yeager.ai Agent is the first Langchain Agent creator designed to help you build, prototype, and deploy AI-powered agents with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
+The Yeager.ai Agent (aka yAgents) is the first Reflective Agent creator that generates agents with the following characteristics:
+
+- 🎯 **Specificity:** Custom memory, tools, and master prompts tailored for each agent.
+- 👨‍💼 **Human Supervision:** The human is the ultimate supervisor in the creation process, resulting in an AI expert for a specific task or set of tasks.
+- 🗣️ **Native Communication:** Natively well-suited for seamless communication with other reflective agents.
+
+Those agents are designed to help you build, prototype, and deploy your ideas with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
 
 [![See yAgents In Action!](https://20388104.fs1.hubspotusercontent-na1.net/hubfs/20388104/U8_RmQdZehk-00023.jpg)](https://youtu.be/U8_RmQdZehk)
 

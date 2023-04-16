@@ -1,3 +1,6 @@
+# YeagerAI Documentation: {yeager_docs} #IMPORTANT
+# Additional Data Sources: {data_sources}
+
 MASTER_TEMPLATE = """
 # Instructions
 As an agent-creation expert, create tailored AI agents considering user requirements, memory streams, master prompts, and toolkits.
@@ -16,9 +19,8 @@ Consider the conversation summary, rolling window, available tools, response for
 
 Conversation Summary: {conv_summary}
 Available Tools: {tools}
-YeagerAI Documentation: {yeager_docs}
 LangChain Documentation: {langchain_docs}
-Additional Data Sources: {data_sources}
+Session Memories: {session_memories}
 
 Follow this structure for each response:
 

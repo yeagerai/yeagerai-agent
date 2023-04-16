@@ -8,12 +8,14 @@ from langchain.memory import (
     ConversationSummaryBufferMemory,
 )
 from langchain.llms import OpenAI
-from langchain.document_loaders import ReadTheDocsLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+
 """
 YeagerAI Documentation: {yeager_docs}
-LangChain Documentation: {langchain_docs}
 Additional Data Sources: {data_sources}
 """
+
 
 class YeagerAIContext:
     """Context for the @yeager.ai agent."""
@@ -28,15 +30,27 @@ class YeagerAIContext:
             memory_key="chat_history", input_key="input"
         )
         self.conv_summary = ConversationSummaryBufferMemory(
-            llm=self.llm, memory_key="conversation_summary", input_key="input", max_token_limit=1000
+            llm=self.llm,
+            memory_key="conversation_summary",
+            input_key="input",
+            max_token_limit=1000,
         )
-
-        self.yeager_docs_db_connector = ""
-        self.langchain_docs_db_connector = ""
-        self.pinecone_docs_db_connector = ""
-        self.chroma_docs_db_connector = ""
-
-
+        self.embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+        self.langchain_docs_db = Chroma(
+            embedding_function=self.embeddings,
+            collection_name="langchain_python_docs",
+            client_settings={
+                "chroma_server_host": "localhost",
+                "chroma_server_http_port": 27017,
+            },
+        )
+        self.session_memories = Chroma(
+            persist_directory="docs_dbs/",
+            embedding_function=self.embeddings,
+            collection_name="session_memories",
+        )
+        # self.yeagerai_docs_db =  Chroma(persist_directory="docs_dbs/", embedding_function=self.embeddings, collection_name="yeagerai_python_docs")
+        # self.additional_dbs =  []
 
     def load_session_message_history(self):
         try:

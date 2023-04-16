@@ -57,9 +57,7 @@ class DesignSolutionSketchRun(YeagerAITool):
         Input should be one string, that contains a brief description of the functionality wanted in the Tool.
         The goal of this tool is augment this brief description converting it into a solution sketch.
         """
-    final_answer_format = (
-        "Final answer: just return a message just saying that the solution sketch was created."
-    )
+    final_answer_format = "Final answer: just return a message just saying that the solution sketch was created."
     api_wrapper: DesignSolutionSketchAPIWrapper
 
     def _run(self, tool_description_prompt: str) -> str:

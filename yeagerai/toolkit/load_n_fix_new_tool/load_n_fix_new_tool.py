@@ -33,7 +33,10 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
     def run(self, new_tool_path: str) -> str:
         # try to load the file
         try:
-            with open(new_tool_path.strip(")").strip('\"').strip('"').strip(" ").strip("\n"), "r") as f:
+            with open(
+                new_tool_path.strip(")").strip('"').strip('"').strip(" ").strip("\n"),
+                "r",
+            ) as f:
                 source_code = f.read()
                 f.close()
         except FileNotFoundError as traceback:
