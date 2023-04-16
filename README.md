@@ -7,7 +7,7 @@ The Yeager.ai Agent (aka yAgents) is the first Reflective Agent creator that gen
 
 - 🎯 **Specificity:** Custom memory, tools, and master prompts tailored for each agent.
 - 👨‍💼 **Human Supervision:** The human is the ultimate supervisor in the creation process, resulting in an AI expert for a specific task or set of tasks.
-- 🗣️ **Native Communication:** Natively well-suited for seamless communication with other reflective agents.
+- 🗣️ **Native Communication:** Natively well-suited for seamless communication with humans and with other reflective agents.
 
 Those agents are designed to help you build, prototype, and deploy your ideas with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
 
