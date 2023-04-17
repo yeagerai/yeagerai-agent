@@ -23,7 +23,6 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
     session_path: str
     model_name: str
     request_timeout: int
-    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
     toolkit: YeagerAIToolkit
 
@@ -33,7 +32,9 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
     def run(self, new_tool_path: str) -> str:
         # try to load the file
         try:
-            with open(new_tool_path.strip(")").strip('"').strip(" ").strip("\n"), "r") as f:
+            with open(
+                new_tool_path.strip(")").strip('"').strip(" ").strip("\n"), "r"
+            ) as f:
                 source_code = f.read()
                 f.close()
         except FileNotFoundError as traceback:
@@ -57,7 +58,6 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
                 openai_api_key=self.openai_api_key,
                 model_name=self.model_name,
                 request_timeout=self.request_timeout,
-                streaming=self.streaming,
             )
 
             # Create a PromptTemplate instance with the read template

@@ -21,7 +21,6 @@ class CreateToolSourceAPIWrapper(BaseModel):
     session_path: str
     model_name: str
     request_timeout: int
-    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, solution_sketch_n_tool_tests: str) -> str:
@@ -40,7 +39,6 @@ class CreateToolSourceAPIWrapper(BaseModel):
             openai_api_key=self.openai_api_key,
             model_name=self.model_name,
             request_timeout=self.request_timeout,
-            streaming=self.streaming,
         )
 
         # Create a PromptTemplate instance with the read template

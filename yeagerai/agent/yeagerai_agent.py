@@ -25,7 +25,6 @@ class YeagerAIAgent:
         session_path: str,
         model_name: str,
         request_timeout: int,
-        streaming: bool,
         callbacks: List[Callable],
         context: YeagerAIContext,
         yeager_kit: YeagerAIToolkit,
@@ -35,7 +34,6 @@ class YeagerAIAgent:
         self.session_path = session_path
         self.model_name = model_name
         self.request_timeout = request_timeout
-        self.streaming = streaming
         self.callbacks = callbacks
         self.context = context
         self.yeager_kit = yeager_kit
@@ -54,7 +52,6 @@ class YeagerAIAgent:
                 temperature=0.2,
                 model_name=self.model_name,
                 request_timeout=self.request_timeout,
-                streaming=self.streaming,
             ),
             prompt=self.prompt,
             memory=self.context.chat_buffer_memory,

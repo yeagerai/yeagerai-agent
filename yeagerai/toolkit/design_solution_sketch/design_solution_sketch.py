@@ -20,7 +20,6 @@ class DesignSolutionSketchAPIWrapper(BaseModel):
     session_path: str
     model_name: str
     request_timeout: int
-    streaming: bool
     openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     def run(self, tool_description_prompt: str) -> str:
@@ -29,7 +28,6 @@ class DesignSolutionSketchAPIWrapper(BaseModel):
             openai_api_key=self.openai_api_key,
             model_name=self.model_name,
             request_timeout=self.request_timeout,
-            streaming=self.streaming,
         )
 
         # Create a PromptTemplate instance with the read template
@@ -57,9 +55,7 @@ class DesignSolutionSketchRun(YeagerAITool):
         Input should be one string, that contains a brief description of the functionality wanted in the Tool.
         The goal of this tool is augment this brief description converting it into a solution sketch.
         """
-    final_answer_format = (
-        "Final answer: just return a message just saying that the solution sketch was created."
-    )
+    final_answer_format = "Final answer: just return a message just saying that the solution sketch was created."
     api_wrapper: DesignSolutionSketchAPIWrapper
 
     def _run(self, tool_description_prompt: str) -> str:
