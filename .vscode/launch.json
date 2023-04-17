@@ -5,7 +5,7 @@
             "name": "CLI AgentBuilder",
             "type": "python",
             "request": "launch",
-            "program": "yeagerai/interfaces/cli.py",
+            "program": "yeagerai/interfaces/gradio_chat.py",
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "${workspaceRoot}"

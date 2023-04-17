@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="yeagerai-agent",
-    version="0.0.39",
+    version="0.0.40",
     description="The @yeagerai Agent is used to create your custom LangChain Agents on-the-fly.",
     author="YeagerAI LLC",
     author_email="jm@yeager.ai",
@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "yeagerai-agent = yeagerai.interfaces.cli:main",
+            "yeagerai-agent = yeagerai.interfaces.gradio_chat:main",
         ],
     },
     classifiers=[
