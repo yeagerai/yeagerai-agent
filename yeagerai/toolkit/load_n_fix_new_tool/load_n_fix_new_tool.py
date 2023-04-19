@@ -4,6 +4,7 @@ import os
 import re
 from typing import List
 from pydantic import BaseModel
+from yeagerai import SimpleLLMFactory
 
 from yeagerai.toolkit.yeagerai_tool import YeagerAITool
 
@@ -22,8 +23,9 @@ from yeagerai.toolkit import YeagerAIToolkit
 class LoadNFixNewToolAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    model_type: str
     request_timeout: int
-    openai_api_key: str = os.getenv("OPENAI_API_KEY")
+    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
     toolkit: YeagerAIToolkit
 
     class Config:
@@ -44,6 +46,10 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
 
         try:
             spec = importlib.util.spec_from_file_location(class_name, new_tool_path)
+            if spec is None:
+                raise ImportError(f"Cannot load {class_name} from {new_tool_path}")
+            if spec.loader is None:
+                raise ImportError(f"Cannot load loader in {class_name} from {new_tool_path}")
             myfile = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(myfile)
 
@@ -53,11 +59,18 @@ class LoadNFixNewToolAPIWrapper(BaseModel):
             self.toolkit.register_tool(class_run(api_wrapper=class_api_wrapper()))
 
         except Exception as traceback:
-            # Initialize ChatOpenAI with API key and model name
-            chat = ChatOpenAI(
-                openai_api_key=self.openai_api_key,
-                model_name=self.model_name,
-                request_timeout=self.request_timeout,
+            # Initialize LLM
+            llm_args = {
+                "ChatOpenAI": {
+                    "model_name":       self.model_name,
+                    "openai_api_key":   self.openai_api_key, 
+                    "request_timeout":  self.request_timeout
+                }
+            }
+            
+            chat = SimpleLLMFactory(
+                self.model_type,
+                kwargs = llm_args.get(self.model_type,{})
             )
 
             # Create a PromptTemplate instance with the read template

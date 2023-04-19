@@ -23,6 +23,7 @@ class YeagerAIAgent:
         username: str,
         session_id: str,
         session_path: str,
+        model_type: str,
         model_name: str,
         request_timeout: int,
         callbacks: List[Callable],
@@ -33,6 +34,7 @@ class YeagerAIAgent:
         self.session_id = session_id
         self.session_path = session_path
         self.model_name = model_name
+        self.model_type = model_type
         self.request_timeout = request_timeout
         self.callbacks = callbacks
         self.context = context
@@ -46,13 +48,22 @@ class YeagerAIAgent:
             input_variables=["input", "intermediate_steps"],
             chat_history=self.context.chat_buffer_memory.chat_memory,
         )
-
+        
+        llm_args = {
+            "ChatOpenAI": {
+                "temperature":0.2,
+                "model_name":       self.model_name,
+                "request_timeout":  self.request_timeout,
+            }
+        }
+        
+        llm = SimpleLLMFactory(
+            self.model_type,
+            kwargs = llm_args.get(self.model_type,{})
+            )
+        
         self.llm_chain = LLMChain(
-            llm=ChatOpenAI(
-                temperature=0.2,
-                model_name=self.model_name,
-                request_timeout=self.request_timeout,
-            ),
+            llm=llm,
             prompt=self.prompt,
             memory=self.context.chat_buffer_memory,
             callback_manager=CallbackManager(self.callbacks),
