@@ -61,12 +61,10 @@ class YeagerAIAgent:
 
         self.output_parser = YeagerAIOutputParser()
 
-        tool_names = [tool.name for tool in self.yeager_kit.get_tools()]
         self.agent = LLMSingleActionAgent(
             llm_chain=self.llm_chain,
             output_parser=self.output_parser,
             stop=["\nObservation:"],
-            allowed_tools=tool_names,
         )
         self.agent_executor = AgentExecutor.from_agent_and_tools(
             agent=self.agent,
