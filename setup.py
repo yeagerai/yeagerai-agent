@@ -8,7 +8,7 @@ setup(
     author_email="jm@yeager.ai",
     packages=find_packages(),
     install_requires=[
-        "langchain",
+        "langchain==0.0.135",
         "openai",
         "GitPython",
         "click",
