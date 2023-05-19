@@ -1,7 +1,12 @@
 # Yeager.ai Agent
 [ WARNING: super-beta ]
 
-[![](https://dcbadge.vercel.app/api/server/VpfmXEMN66?compact=true&style=flat)](https://discord.gg/VpfmXEMN66) [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/yeagerai.svg?style=social&label=Follow%20%40YeagerAI)](https://twitter.com/yeagerai) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit/) 
+
+[![](https://dcbadge.vercel.app/api/server/VpfmXEMN66?compact=true&style=flat)](https://discord.gg/VpfmXEMN66) 
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/yeagerai.svg?style=social&label=Follow%20%40YeagerAI)](https://twitter.com/yeagerai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit/) 
+[![GitHub star chart](https://img.shields.io/github/stars/yeagerai/yeagerai-agent?style=social)](https://star-history.com/#yeagerai/yeagerai-agent)
+
 
 Yeager.ai Agent is the first Langchain Agent creator designed to help you build, prototype, and deploy AI-powered agents with ease. With an emphasis on flexibility, interactivity, and seamless integration, Yeager.ai Agent is the perfect tool for developers, researchers, and AI enthusiasts alike.
 
