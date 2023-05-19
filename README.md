@@ -32,12 +32,8 @@ And start building your agents on-the-fly!
 ### ⚠️ Warnings! 
 
 #### GPT-4 API Access Required
-If you don't have access to GPT-4 API, don't worry! You can still take advantage of Yeager.ai Agent's features through our Discord bot. 🤖
-
-[Join our Discord server](https://discord.gg/VpfmXEMN66) to get started and interact with the Yeager.ai Agent using the GPT-4-powered bot. Our friendly community is also there to assist you, answer questions, and share their experiences.
-
 #### Not tested for windows
-But if you want to contribute PRs al welcome! Just contact @jmlago#0277 on [our Discord server](https://discord.gg/VpfmXEMN66)
+
 ## Documentation
 For detailed information on use cases, tools, agents, toolkits, and agent executors, please visit the [Yeager.ai Agent docs](https://yeagerai.gitbook.io/docs).
 
