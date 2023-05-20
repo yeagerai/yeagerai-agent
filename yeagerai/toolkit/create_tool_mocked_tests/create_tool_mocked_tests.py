@@ -3,6 +3,7 @@ import os
 import re
 from typing import List
 from pydantic import BaseModel
+from yeagerai import SimpleLLMFactory
 
 from yeagerai.toolkit.yeagerai_tool import YeagerAITool
 
@@ -21,17 +22,26 @@ from yeagerai.toolkit.create_tool_mocked_tests.create_tool_mocked_tests_master_p
 class CreateToolMockedTestsAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    model_type: str
     request_timeout: int
-    openai_api_key: str = os.getenv("OPENAI_API_KEY")
+    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
 
     def run(self, solution_sketch: str) -> str:
-        # Initialize ChatOpenAI with API key and model name
-        chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key,
-            model_name=self.model_name,
-            request_timeout=self.request_timeout,
-        )
 
+        # Initialize LLM
+        llm_args = {
+            "ChatOpenAI": {
+                "model_name":       self.model_name,
+                "openai_api_key":   self.openai_api_key, 
+                "request_timeout":  self.request_timeout
+            }
+        }
+        
+        chat = SimpleLLMFactory(
+            self.model_type,
+            kwargs = llm_args.get(self.model_type,{})
+        )
+        
         # Create a PromptTemplate instance with the read template
         y_tool_master_prompt = PromptTemplate(
             input_variables=["solution_sketch"],
@@ -47,7 +57,8 @@ class CreateToolMockedTestsAPIWrapper(BaseModel):
         out = chain.run(solution_sketch)
 
         # Extract the name of the class from the code block
-        quick_llm = OpenAI(temperature=0)
+        quick_llm = OpenAI(temperature=0) # TODO How to deal with secondary networks (ChatOpenAI vs OpenAI)
+        #quick_llm = chat
         class_name = quick_llm(
             f"Which is the name of the class that is being tested here? Return only the class_name value like a python string, without any other explanation \n {out}"
         ).replace("\n", "")
