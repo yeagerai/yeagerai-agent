@@ -1,5 +1,5 @@
 # Yeager.ai Agent
-[ WARNING: super-beta ]
+[ WARNING: DISCONTINUED ]
 
 
 [![](https://dcbadge.vercel.app/api/server/VpfmXEMN66?compact=true&style=flat)](https://discord.gg/VpfmXEMN66) 
