@@ -53,7 +53,7 @@ def pre_load():
     return has_api_key, openai_api_key, username, env_path, root_path
 
 
-def set_session_variables(username, model_name, request_timeout, root_path, session_id):
+def set_session_variables(username, model_name, model_type, request_timeout, root_path, session_id):
     session_path = os.path.join(root_path, session_id)
     # build context
     y_context = YeagerAIContext(username, session_id, session_path)
@@ -61,7 +61,7 @@ def set_session_variables(username, model_name, request_timeout, root_path, sess
     # build callbacks
     callbacks = [
         KageBunshinNoJutsu(y_context),
-        GitLocalRepoCallbackHandler(username=username, session_path=session_path),
+        GitLocalRepoCallbackHandler(username=username, session_path=session_path, model_type=model_type)
     ]
 
     # toolkit
@@ -71,6 +71,7 @@ def set_session_variables(username, model_name, request_timeout, root_path, sess
             api_wrapper=DesignSolutionSketchAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
             )
         ),
@@ -80,6 +81,7 @@ def set_session_variables(username, model_name, request_timeout, root_path, sess
             api_wrapper=CreateToolMockedTestsAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
             )
         ),
@@ -89,6 +91,7 @@ def set_session_variables(username, model_name, request_timeout, root_path, sess
             api_wrapper=CreateToolSourceAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
             )
         ),
@@ -99,6 +102,7 @@ def set_session_variables(username, model_name, request_timeout, root_path, sess
             api_wrapper=LoadNFixNewToolAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 toolkit=yeager_kit,
             )
@@ -112,9 +116,11 @@ def load_state():
     session_id = str(uuid.uuid1())[:7] + "-" + username
     session_path = os.path.join(root_path, session_id)
     model_name = "gpt-4"
+    #model_type = "GPT4All"
+    model_type = "ChatOpenAI"
     request_timeout = 300
     y_context, callbacks, yeager_kit = set_session_variables(
-        username, model_name, request_timeout, root_path, session_id
+        username, model_name, model_type, request_timeout, root_path, session_id
     )
     return {
         "has_api_key": has_api_key,
@@ -125,6 +131,7 @@ def load_state():
         "session_id": session_id,
         "session_path": session_path,
         "model_name": model_name,
+        "model_type": model_type,
         "request_timeout": request_timeout,
         "y_context": y_context,
         "callbacks": callbacks,
@@ -133,10 +140,11 @@ def load_state():
 
 
 def update_state_from_settings(
-    session_id, model_name, request_timeout, openai_api_key, session_data
+    session_id, model_name, model_type, request_timeout, openai_api_key, session_data
 ):
     session_data["session_id"] = session_id
     session_data["model_name"] = model_name
+    session_data["model_type"] = model_type
     session_data["request_timeout"] = request_timeout
     if openai_api_key != session_data["openai_api_key"]:
         session_data["openai_api_key"] = openai_api_key
@@ -157,6 +165,7 @@ def bot(history, session_data):
     agent = YeagerAIAgent(
         username=session_data["username"],
         model_name=session_data["model_name"],
+        model_type=session_data["model_type"],
         request_timeout=session_data["request_timeout"],
         session_id=session_data["session_id"],
         session_path=session_data["session_path"],
@@ -219,6 +228,12 @@ def main():
                 name="model_name",
                 value=session_data.value["model_name"],
             )
+            model_type_dropdown = gr.Dropdown(
+                ["ChatOpenAI", "GPT4All"],
+                label="Model Type",
+                name="model_type",
+                value=session_data.value["model_type"],
+            )
             request_timeout_input = gr.Number(
                 name="request_timeout",
                 label="Request Timeout",
@@ -243,6 +258,7 @@ def main():
                 inputs=[
                     session_id_input,
                     model_name_radio,
+                    model_type_dropdown,
                     request_timeout_input,
                     api_key_input,
                     session_data,

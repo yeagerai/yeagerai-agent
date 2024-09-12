@@ -2,6 +2,7 @@
 import os
 
 from pydantic import BaseModel
+from yeagerai import SimpleLLMFactory
 
 from yeagerai.toolkit.yeagerai_tool import YeagerAITool
 
@@ -19,16 +20,25 @@ from yeagerai.toolkit.design_solution_sketch.design_solution_sketch_master_promp
 class DesignSolutionSketchAPIWrapper(BaseModel):
     session_path: str
     model_name: str
+    model_type: str
     request_timeout: int
-    openai_api_key: str = os.getenv("OPENAI_API_KEY")
+    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
 
     def run(self, tool_description_prompt: str) -> str:
-        # Initialize ChatOpenAI with API key and model name
-        chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key,
-            model_name=self.model_name,
-            request_timeout=self.request_timeout,
+        # Initialize LLM
+        llm_args = {
+            "ChatOpenAI": {
+                "model_name":       self.model_name,
+                "openai_api_key":   self.openai_api_key, 
+                "request_timeout":  self.request_timeout
+            }
+        }
+        
+        chat = SimpleLLMFactory(
+            self.model_type,
+            kwargs = llm_args.get(self.model_type,{})
         )
+
 
         # Create a PromptTemplate instance with the read template
         y_tool_master_prompt = PromptTemplate(
