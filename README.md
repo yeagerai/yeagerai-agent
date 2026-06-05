@@ -1,5 +1,9 @@
 # Yeager.ai Agent
-[ WARNING: DISCONTINUED ]
+> [!IMPORTANT]
+> **⚠️ This project is DISCONTINUED.**
+>
+> But it has re-emerged from the shadows in its best version yet 🥷❄️
+> Check it out at **[genlayerlabs/subzeroclaw](https://github.com/genlayerlabs/subzeroclaw)**.
 
 
 [![](https://dcbadge.vercel.app/api/server/VpfmXEMN66?compact=true&style=flat)](https://discord.gg/VpfmXEMN66) 
