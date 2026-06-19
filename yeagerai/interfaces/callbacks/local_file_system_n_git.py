@@ -11,15 +11,17 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
 )
+from yeagerai import SimpleLLMFactory
 
 
 class GitLocalRepoCallbackHandler(BaseCallbackHandler):
     """Callback Handler that creates a local git repo and commits changes."""
 
-    def __init__(self, username: str, session_path: str) -> None:
+    def __init__(self, username: str, session_path: str, model_type: str) -> None:
         """Initialize callback handler."""
         super().__init__()
         self.username = username
+        self.model_type = model_type
         self.session_path = session_path
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
 
@@ -45,10 +47,18 @@ class GitLocalRepoCallbackHandler(BaseCallbackHandler):
         # Create a prompt template
         prompt_template = "Explain the following changes in a Git commit message:\n\n{diff_output}\n\nCommit message:"
 
-        # Initialize ChatOpenAI with API key and model name
-        chat = ChatOpenAI(
-            openai_api_key=self.openai_api_key, model_name="gpt-3.5-turbo"
-        )
+        # Initialize LLM
+        llm_args = {
+            "ChatOpenAI": {
+                "model_name":       "gpt-3.5-turbo",
+                "openai_api_key" :  self.openai_api_key 
+            }
+        }
+        
+        chat = SimpleLLMFactory(
+            self.model_type,
+            kwargs = llm_args.get(self.model_type,{})
+            )
 
         # Create a PromptTemplate instance with the read template
         master_prompt = PromptTemplate(

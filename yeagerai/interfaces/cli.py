@@ -77,6 +77,7 @@ def pre_load():
 def chat_interface(
     username,
     model_name,
+    model_type,
     request_timeout,
     streaming,
     session_id,
@@ -94,6 +95,7 @@ def chat_interface(
             agent = YeagerAIAgent(
                 username=username,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 streaming=streaming,
                 session_id=session_id,
@@ -118,6 +120,7 @@ def main():
         print("Exiting...")
         return
 
+    model_type = "ChatOpenAI"
     model_name = "gpt-4"  # you can switch to gpt-3.5-turbo but is not tested
     request_timeout = 300
     streaming = True
@@ -128,7 +131,7 @@ def main():
     # build callbacks
     callbacks = [
         KageBunshinNoJutsu(y_context),
-        GitLocalRepoCallbackHandler(username=username, session_path=session_path),
+        GitLocalRepoCallbackHandler(username=username, session_path=session_path, model_type=model_type),
     ]
 
     # toolkit
@@ -138,6 +141,7 @@ def main():
             api_wrapper=DesignSolutionSketchAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 streaming=streaming,
             )
@@ -148,6 +152,7 @@ def main():
             api_wrapper=CreateToolMockedTestsAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 streaming=streaming,
             )
@@ -158,6 +163,7 @@ def main():
             api_wrapper=CreateToolSourceAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 streaming=streaming,
             )
@@ -169,6 +175,7 @@ def main():
             api_wrapper=LoadNFixNewToolAPIWrapper(
                 session_path=session_path,
                 model_name=model_name,
+                model_type=model_type,
                 request_timeout=request_timeout,
                 streaming=streaming,
                 toolkit=yeager_kit,
